@@ -25,6 +25,9 @@ def test_match_result_has_email_json_fields() -> None:
     assert len(report["sub_games"]) == 6
     assert [game["id"] for game in report["sub_games"]] == list(range(1, 7))
     assert all(game["moves"] == 1 for game in report["sub_games"])
-    assert all(game["winner"] == "thief" for game in report["sub_games"])
-    assert report["totals"] == {"cop": 30, "thief": 60}
+    assert all(game["winner"] in {"cop", "thief"} for game in report["sub_games"])
+    assert report["totals"] == {
+        "cop": sum(game["scores"]["cop"] for game in report["sub_games"]),
+        "thief": sum(game["scores"]["thief"] for game in report["sub_games"]),
+    }
     assert json.loads(json.dumps(report)) == report

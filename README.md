@@ -2,7 +2,7 @@
 
 A documentation-first multi-agent reinforcement learning (MARL) project for Bar-Ilan University Vibe Coding Workshop Exercise 06. The planned product is a configurable grid-world match between an autonomous cop and thief, with partial observations, baseline policies, CTDE-inspired learning, a GUI, two MCP endpoints, and one final JSON email report.
 
-> **Status:** the `uv` scaffold, validated game config, deterministic environment, SDK match runner, report-ready result models, headless CLI, and focused tests are implemented. MARL training, GUI, MCP, and Gmail delivery are not implemented.
+> **Status:** the `uv` scaffold, deterministic environment, random/heuristic baseline agents, resilient six-game runner, SDK, headless CLI, and JSON report preview are implemented. MARL training, GUI, MCP, and live Gmail delivery are not implemented.
 
 ## Source of truth
 
@@ -20,7 +20,7 @@ See [`docs/PRD.md`](docs/PRD.md), [`docs/PLAN.md`](docs/PLAN.md), and [`docs/TOD
 - A sub-game ends on capture or after 25 completed moves.
 - The cop may place up to five blocking barriers; placing one consumes its action.
 - Both agents execute from local observations. Global state is restricted to centralized training, evaluation instrumentation, and rendering.
-- Random and heuristic agents provide baselines; IQL is the learning baseline; VDN is the first scoped CTDE comparison. QMIX is an optional extension.
+- Seeded random and local-observation heuristic agents provide implemented baselines; IQL remains the next learning baseline, followed by a scoped VDN comparison.
 - A GUI renders the grid, agents, barriers, sub-game, step, score, and winner.
 - Separate cop and thief MCP services run locally on different ports before any cloud deployment.
 - After six valid sub-games, the reporter creates one JSON email body. Dry-run is mandatory; live Gmail delivery is opt-in.
@@ -61,6 +61,13 @@ Copy-Item .env-example .env
 ```powershell
 # Available: headless six-sub-game match
 uv run cops-and-robbers play --config config/default_game.yaml
+
+# Choose seeded baseline policies and an output path
+uv run cops-and-robbers play `
+  --cop-agent heuristic `
+  --thief-agent random `
+  --seed 42 `
+  --output results/report_email_preview.json
 ```
 
 Training/evaluation, GUI, MCP service, and Gmail commands remain future interfaces and are intentionally absent. The implemented CLI calls the SDK; future consumers must do the same.
@@ -95,7 +102,7 @@ The planned GUI starts with the `gui` command. It must show a scalable grid, vis
 
 ## Reports and Gmail safety
 
-The default mode is dry-run. After six valid sub-games, exactly one JSON body is validated and written to:
+The implemented CLI is dry-run only. After six valid sub-games, one report-ready JSON body is written atomically to:
 
 ```text
 results/report_email_preview.json
@@ -108,7 +115,7 @@ Live delivery requires explicit configuration and credentials supplied through e
 | Symptom | Check |
 |---|---|
 | `uv` is not recognized | Install `uv`, open a new terminal, and verify `uv --version`. |
-| `pyproject.toml` is missing | Expected during documentation phase; complete TODO P1 before installation. |
+| `pyproject.toml` is missing | The checkout is incomplete or the command is running outside the repository root. |
 | Repeated runs differ | Use the same config and `random_seed`; record package and config versions. |
 | An agent sees the full board | Treat as a CTDE leakage defect; execution accepts only local observation/history. |
 | MCP connection fails | Confirm both services use distinct configured ports, valid token, and localhost URLs. |

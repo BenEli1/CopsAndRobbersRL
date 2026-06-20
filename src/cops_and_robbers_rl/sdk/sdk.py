@@ -1,28 +1,13 @@
-"""Stable SDK facade for deterministic game workflows."""
+"""Stable SDK facade for autonomous match workflows."""
 
-from collections.abc import Callable
-from datetime import datetime
 from pathlib import Path
-from zoneinfo import ZoneInfo
 
-from cops_and_robbers_rl.environment.actions import Action, ActionType
-from cops_and_robbers_rl.environment.game_state import (
-    MatchResult,
-    Role,
-    Student,
-    SubGameResult,
-)
-from cops_and_robbers_rl.environment.observations import LocalObservation
+from cops_and_robbers_rl.agents.base_agent import BaseAgent
+from cops_and_robbers_rl.agents.random_agents import RandomCopAgent, RandomThiefAgent
+from cops_and_robbers_rl.environment.game_state import MatchResult, Student
 from cops_and_robbers_rl.environment.rules import GameEngine
-from cops_and_robbers_rl.environment.scoring import Score, score_for_winner
+from cops_and_robbers_rl.runner.match_runner import DEFAULT_REPORT_PATH, MatchRunner
 from cops_and_robbers_rl.shared.config import GameConfig, load_game_config
-
-Policy = Callable[[LocalObservation], Action]
-_JERUSALEM = ZoneInfo("Asia/Jerusalem")
-
-
-def _stay_policy(_observation: LocalObservation) -> Action:
-    return Action(ActionType.STAY)
 
 
 class CopsAndRobbersSDK:
@@ -30,6 +15,7 @@ class CopsAndRobbersSDK:
 
     def __init__(self, config: GameConfig) -> None:
         self.config = config
+        self.last_technical_failures = 0
 
     @classmethod
     def from_config(cls, path: str | Path | None = None) -> "CopsAndRobbersSDK":
@@ -42,63 +28,43 @@ class CopsAndRobbersSDK:
         *,
         seed: int | None = None,
     ) -> GameEngine:
-        """Create a deterministic sub-game engine."""
+        """Create a deterministic sub-game engine for testing or debugging."""
         return GameEngine(self.config, sub_game_id=sub_game_id, seed=seed)
 
     def run_match(
         self,
-        cop_policy: Policy = _stay_policy,
-        thief_policy: Policy = _stay_policy,
+        cop_agent: BaseAgent | None = None,
+        thief_agent: BaseAgent | None = None,
         *,
         group_name: str = "BenEli1",
         students: tuple[Student, ...] = (Student("A", "Ben Eli", "319086435"),),
         github_repo: str = "https://github.com/BenEli1/CopsAndRobbersRL",
     ) -> MatchResult:
-        """Run configured sub-games and return an email-report-ready result."""
-        results = tuple(
-            self._run_sub_game(
-                sub_game_id,
-                self.config.random_seed + sub_game_id - 1,
-                cop_policy,
-                thief_policy,
-            )
-            for sub_game_id in range(1, self.config.num_games + 1)
-        )
-        totals = Score(
-            cop=sum(game.scores.cop for game in results),
-            thief=sum(game.scores.thief for game in results),
-        )
-        return MatchResult(
+        """Run six valid sub-games with decentralized execution agents."""
+        runner = self._runner(cop_agent, thief_agent)
+        result = runner.run(
             group_name=group_name,
             students=students,
             github_repo=github_repo,
-            timezone="Asia/Jerusalem",
-            sub_games=results,
-            totals=totals,
         )
+        self.last_technical_failures = runner.technical_failures
+        return result
 
-    def _run_sub_game(
+    def run_match_and_save(
         self,
-        sub_game_id: int,
-        seed: int,
-        cop_policy: Policy,
-        thief_policy: Policy,
-    ) -> SubGameResult:
-        engine = self.create_sub_game(sub_game_id, seed=seed)
-        start = datetime.now(_JERUSALEM)
-        while not engine.state.terminal:
-            cop_observation, thief_observation = engine.observations()
-            engine.step(cop_policy(cop_observation), thief_policy(thief_observation))
-        end = datetime.now(_JERUSALEM)
-        winner = engine.state.winner
-        if winner not in {Role.COP, Role.THIEF}:
-            raise RuntimeError("terminal sub-game has no winner")
-        scores = score_for_winner(winner.value, self.config.scoring)
-        return SubGameResult(
-            id=sub_game_id,
-            start=start,
-            end=end,
-            moves=engine.state.moves_completed,
-            winner=winner,
-            scores=scores,
+        cop_agent: BaseAgent | None = None,
+        thief_agent: BaseAgent | None = None,
+        *,
+        output_path: str | Path = DEFAULT_REPORT_PATH,
+    ) -> MatchResult:
+        """Run a match and save its exact JSON report preview."""
+        result = self.run_match(cop_agent, thief_agent)
+        MatchRunner.save_report(result, output_path)
+        return result
+
+    def _runner(self, cop_agent: BaseAgent | None, thief_agent: BaseAgent | None) -> MatchRunner:
+        return MatchRunner(
+            self.config,
+            cop_agent or RandomCopAgent(seed=self.config.random_seed),
+            thief_agent or RandomThiefAgent(seed=self.config.random_seed + 1),
         )

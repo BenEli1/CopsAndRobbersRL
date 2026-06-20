@@ -98,3 +98,18 @@ Implement only the `uv` project scaffold, validated default config, deterministi
 ### Explicitly deferred
 
 MARL learners/networks, heuristic agents, replay/training, GUI, MCP, Gmail delivery/dry-run files, cloud deployment, and research results.
+
+## 2026-06-20 - Prompt 4: baseline agents and match runner
+
+### User direction (summary)
+
+Add random and heuristic cop/thief agents, enforce local-observation-only execution, run six valid sub-games with technical-failure recovery, print a CLI summary, and save the exact report preview JSON. Continue to defer MARL networks, GUI, MCP, and live Gmail.
+
+### Decisions and delivered scope
+
+- Added a `BaseAgent` contract that rejects non-local and wrong-role observations.
+- Added seeded random agents and deterministic-seeded heuristic pursuit/evasion agents.
+- Heuristic barriers remain disabled because the existing barrier action requires an absolute target while decentralized observations intentionally omit absolute self coordinates; enabling them now would violate the information boundary.
+- Added `MatchRunner` with bounded retry so transient agent/runtime failures do not count as valid sub-games.
+- Added SDK and CLI selection for random/heuristic agents plus atomic `results/report_email_preview.json` output.
+- Added behavior, isolation, retry, six-game, and JSON tests. Local verification reached 20 passing tests before the final lint correction pass.
