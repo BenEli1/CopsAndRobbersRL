@@ -1,0 +1,108 @@
+# Summary Report
+
+## Document status
+
+This began as a documentation-phase scaffold. The deterministic engine, SDK, CLI, and focused unit tests now exist; **no MARL training, GUI session, MCP deployment, Gmail delivery, or research experiment has occurred.** Research evidence fields remain pending.
+
+## Project and research question
+
+The planned system studies whether locally executing cop and thief policies can learn useful pursuit-evasion behavior under partial observability, and whether a scoped CTDE/value-factorization training setup is more stable or effective than Independent Q-Learning (IQL) and non-learning baselines.
+
+The game is formally a competitive POSG because the two roles have separate objectives. The required Dec-POMDP tuple is retained to describe joint state/action/observation mechanics and the training information boundary, but cooperative VDN/QMIX theory will not be presented as a complete solution to the adversarial game.
+
+## Planned experiment matrix
+
+| Policy | Role/opponents | Training seeds | Evaluation seeds | Status |
+|---|---|---:|---:|---|
+| Random | Random and heuristic | N/A | TBD | Not implemented |
+| Heuristic | Random/heuristic | N/A | TBD | Not implemented |
+| IQL | Baselines and self-play | TBD | disjoint TBD | Not implemented |
+| Simplified VDN CTDE | Same evaluation set as IQL | TBD | disjoint TBD | Not implemented |
+| QMIX | Optional | TBD | disjoint TBD | Not planned for core v1 |
+
+Evaluation will use fixed configs and held-out seeds, with exploration disabled. Results must report sample count and mean plus standard deviation or confidence interval, not a single favorable match.
+
+## Required evidence register
+
+| Evidence | Planned location | Current state |
+|---|---|---|
+| Environment/unit test report | Local `uv run pytest` | 14 tests passed on 2026-06-20; CI artifact pending |
+| Coverage >=85% | CI coverage artifact | Not yet measured |
+| Ruff zero violations | Local `uv run ruff check` | Passed on 2026-06-20; CI pending |
+| Baseline metrics | `results/reports/baselines.json` | Not generated |
+| IQL learning/loss curves | `results/plots/` | Not generated |
+| CTDE learning/loss curves | `results/plots/` | Not generated |
+| Held-out comparison | `results/reports/evaluation.json` | Not generated |
+| GUI screenshots | `results/screenshots/` | Not generated |
+| Local two-service MCP logs | sanitized `results/reports/` | Not generated |
+| Six-game report preview | `results/report_email_preview.json` | Not generated |
+| Live Gmail receipt | private operator evidence | Optional; not sent |
+| Cloud service evidence | deployment record | Optional; not deployed |
+
+Generated artifacts are not to be added retroactively by hand. The implementation must record configuration, seed, code version, dependency lock hash, checkpoint hash, and timestamp with each experiment.
+
+## Metrics to report
+
+- Cop win/capture rate and thief survival rate.
+- Mean/median and distribution of moves to capture.
+- Authoritative role scores and learning returns separately.
+- Per-agent TD/Q loss, gradient norms, exploration, and invalid actions.
+- Training samples, time, inference latency, and resource notes.
+- Generalization by grid size and observation radius.
+- Difference from random/heuristic baselines and uncertainty across seeds.
+
+## Planned figures
+
+1. Training return versus environment steps for both agents.
+2. TD loss versus updates for IQL and completed CTDE methods.
+3. Held-out cop win rate and thief survival rate by opponent.
+4. Capture-move distribution.
+5. Sensitivity to grid size and observation radius.
+
+Each figure must state seeds, aggregation, smoothing, confidence representation, and source artifact. No placeholder chart will be mistaken for experimental output.
+
+## Analysis template
+
+### Baseline behavior
+
+Pending. Compare random and heuristic policies first and identify whether mechanics/scoring create obvious role bias.
+
+### IQL and non-stationarity
+
+Pending. Examine target/loss oscillation, replay staleness, policy cycling, and performance variance. Do not infer convergence solely from smoothed training reward.
+
+### CTDE comparison
+
+Pending. Compare on identical held-out episodes. Explain the selected competitive payoff/mixer formulation and separate empirical benefit from theoretical cooperative IGM guarantees.
+
+### Partial observability and optional memory
+
+Pending. If recurrent models are implemented, report a controlled feed-forward versus GRU/LSTM ablation. Otherwise state that memory remains future work.
+
+### Limitations and threats to validity
+
+Expected threats include few seeds, small grids, opponent overfitting, reward-shaping bias, cooperative-factorization mismatch, hyperparameter selection on evaluation data, and system/network failures. The final report must add observed failures and avoid causal claims unsupported by the experiment design.
+
+## Software verification template
+
+- Clean installation: local `uv sync --extra dev --system-certs` passed; clean CI pending.
+- Deterministic six-game headless match: passed locally with six 25-move thief wins under default stay policies.
+- Environment edge-case suite: requested 14-test suite passed; broader property/coverage work remains.
+- Local-observation/global-state leakage tests: pending.
+- SDK-only consumer architecture review: pending.
+- GUI required-fields and screenshot review: pending.
+- Two independent MCP endpoints with token auth: pending.
+- Dry-run exact JSON and one-report invariant: pending.
+- Secret scan: pending.
+
+## Final-project extension plan
+
+After core evidence, extend toward multiple pursuers/evaders, procedurally generated obstacles, recurrent decentralized policies, population-based self-play, MAPPO/QPLEX/Weighted-QMIX comparisons, curriculum learning, experiment tracking, and containerized cloud services. Each extension should retain SDK contracts and information-boundary tests.
+
+## Bonus-game plan
+
+Bonus work starts only after core protocol compatibility and report reliability. Coordinate with one external group; play six games with roles swapped after game three; have both groups generate mutually agreed reports; include both repositories, team identities, role per sub-game, group totals, bonus claims, and screenshots. No bonus claim exists yet.
+
+## Current conclusion
+
+The deterministic engine foundation is implemented and locally verified, but no learning algorithm or research experiment has been implemented or validated. Any claim about learned performance, screenshots, cloud deployment, or email delivery would currently be unsupported.
