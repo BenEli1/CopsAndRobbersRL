@@ -1,0 +1,100 @@
+# Prompt and Decision Log
+
+This log preserves material AI-assisted-development prompts and resulting decisions without storing hidden chain-of-thought, secrets, or fabricated execution evidence. Dates use Asia/Jerusalem.
+
+## 2026-06-20 - Prompt 1: documentation-first architecture
+
+### User direction (summary)
+
+Act as senior architect for Exercise 06; read repository and three course PDFs in precedence order; do not implement code; create README plus PRD/PLAN/TODO and mechanism PRDs; cover MARL theory, deterministic game, SDK/OOP architecture, GUI, two MCP services, Gmail JSON/dry-run, testing, risks, and extension plans.
+
+### Decisions recorded
+
+- Documentation precedes implementation.
+- Exercise PDF overrides lecture, which overrides software guidelines.
+- Python plus `uv`; no `pip`-managed workflow or `requirements.txt` source of truth.
+- SDK is the sole business-logic entry point for CLI/GUI/integrations.
+- The game is a competitive POSG; Dec-POMDP notation remains course-required context.
+- Local observations are execution inputs; global state is training-only (plus non-policy rendering/diagnostics).
+- IQL is the baseline; VDN is the first scoped CTDE candidate; QMIX/LSTM/GRU/OLoRA are optional until implemented and evaluated.
+- Two independent local MCP services precede any cloud deployment.
+- Reporting defaults to one dry-run JSON preview after six valid games; no credentials in Git.
+
+### Open decisions
+
+- Confirm actual eight-character group code if `BenEli1` is not accepted.
+- Confirm Student B/C identities or that this is an approved one-person submission.
+- Approve the proposed simultaneous movement/crossing/barrier conflict semantics in PLAN ADR-003 and environment PRD.
+- Select project code license before release.
+
+## 2026-06-20 - Request: periodic GitHub publishing
+
+### User direction (summary)
+
+Push code periodically to GitHub.
+
+### Decision recorded
+
+An hourly safe-push automation was requested: skip clean runs, inspect changes for secrets/unsafe artifacts, run available validation, commit only appropriate validated changes, and push the current branch. This operational request does not change documentation-first scope and does not authorize implementing features before review.
+
+## 2026-06-20 - Prompt 2: strict documentation review
+
+### User direction (summary)
+
+Grade every Markdown document against an explicit checklist, improve all docs directly, and do not implement code.
+
+### Baseline findings
+
+- Only an empty `README.md` existed.
+- Required `docs/PRD.md`, `PLAN.md`, `TODO.md`, four mechanism PRDs, `SUMMARY_REPORT.md`, and `PROMPT_LOG.md` were absent.
+- The documentation baseline therefore failed the checklist before remediation.
+
+### Review actions and decisions
+
+- Read all three PDFs and visually checked representative source pages for rule, CTDE, and documentation requirements.
+- Rebuilt README as an honest documentation-phase manual with planned `uv` install/run/test/GUI/MCP commands, config/report guidance, troubleshooting, and status labels.
+- Added measurable product and mechanism acceptance criteria.
+- Added C4-style Mermaid context/container/component/class, sequence, CTDE data-flow, and deployment views.
+- Added ADRs for SDK-only access, POSG framing, deterministic simultaneous resolution, IQL/VDN scope, local-first MCP, dry-run reporting, YAML/env config, and GUI choice.
+- Defined six-game lifecycle, authoritative scoring, barrier rules, local observation/global training types, technical-failure behavior, and unresolved assignment ambiguities.
+- Defined exact report shape while marking all example outcomes/timestamps as placeholders, not results.
+- Added phase/task Definitions of Done and left every implementation item unchecked.
+- Added a summary evidence register that explicitly says nothing has been implemented, trained, deployed, or sent.
+
+### Grader checklist disposition after remediation
+
+| Document/check | Disposition |
+|---|---|
+| README install/uv/run/test/GUI/config/reports/troubleshooting | Covered; commands labeled planned until implementation |
+| PRD product/users/goals/FR/NFR/criteria/out-of-scope | Covered |
+| PLAN architecture/OOP/SDK/data flow/C4/ADRs/tests | Covered |
+| TODO phases plus per-task DoD | Covered |
+| Game environment mechanics/observations/state/scoring/config/edges | Covered; collision ADR awaits human approval |
+| MARL Dec-POMDP/POSG/CTDE/IQL/VDN-QMIX/non-stationarity/IGM/memory/metrics | Covered with competitive-method caveat |
+| MCP two services/local first/cloud/auth/ports/failures | Covered |
+| Gmail exact JSON/dry-run/safety/single final email | Covered; team metadata remains open |
+| Summary placeholders without false results | Covered |
+| Prompt and decision trace | Covered |
+
+## Logging policy for future prompts
+
+For each material prompt, record the date, user intent summary, changed requirements, chosen/rejected alternatives, affected documents, unresolved questions, and verification evidence. Never record credentials, private tokens, hidden reasoning, or claim a command/test/result that did not occur.
+
+## 2026-06-20 - Prompt 3: scaffold and deterministic engine
+
+### User direction (summary)
+
+Implement only the `uv` project scaffold, validated default config, deterministic game engine modules, SDK wrapper, CLI, and requested tests. Explicitly defer MARL networks, MCP, Gmail, and GUI.
+
+### Decisions and delivered scope
+
+- Added an installable `src` package with Python 3.11+, PyYAML, Windows timezone data, pytest, coverage, and Ruff locked by `uv`.
+- Implemented immutable positions, actions, game state, observations, scores, sub-game results, and report-ready match results.
+- Implemented simultaneous actions, deterministic illegal-action-to-stay behavior, capture/timeout, optional adjacent barriers, five-barrier limit, and seeded distinct spawning.
+- Kept full coordinates behind the explicit `global_state_for_training()` method; decentralized observations are egocentric and radius-limited.
+- Added an SDK facade and a headless `play` command. Default policies stay in place and are smoke-test controls, not AI agents.
+- Verification: `uv run pytest` passed 14 tests, `uv run ruff check` passed, and the CLI produced six valid default sub-games and report-ready JSON.
+
+### Explicitly deferred
+
+MARL learners/networks, heuristic agents, replay/training, GUI, MCP, Gmail delivery/dry-run files, cloud deployment, and research results.
