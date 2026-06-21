@@ -15,7 +15,7 @@ from cops_and_robbers_rl.agents import (
 from cops_and_robbers_rl.environment.game_state import MatchResult, Role
 from cops_and_robbers_rl.runner.match_runner import DEFAULT_REPORT_PATH
 from cops_and_robbers_rl.sdk.sdk import CopsAndRobbersSDK
-from cops_and_robbers_rl.shared.paths import DEFAULT_GAME_CONFIG
+from cops_and_robbers_rl.shared.paths import DEFAULT_GAME_CONFIG, RESULTS_ROOT
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -30,6 +30,11 @@ def build_parser() -> argparse.ArgumentParser:
     play.add_argument("--output", type=Path, default=DEFAULT_REPORT_PATH)
     gui = subparsers.add_parser("gui", help="launch the native Tkinter interface")
     gui.add_argument("--config", default=str(DEFAULT_GAME_CONFIG))
+    train = subparsers.add_parser("train", help="train tabular independent Q-learners")
+    train.add_argument("--config", default=str(DEFAULT_GAME_CONFIG))
+    train.add_argument("--episodes", type=int, default=200)
+    train.add_argument("--staged", action="store_true", help="train on 2x2, 3x3, 4x4, 5x5")
+    train.add_argument("--output", type=Path, default=RESULTS_ROOT)
     return parser
 
 
@@ -49,6 +54,36 @@ def main(argv: Sequence[str] | None = None) -> int:
         from cops_and_robbers_rl.gui import launch_gui
 
         launch_gui(args.config)
+        return 0
+    if args.command == "train":
+        from cops_and_robbers_rl.marl.trainer import (
+            IQLTrainer,
+            TrainingConfig,
+            save_baseline_comparison,
+            save_training_outputs,
+            train_staged,
+        )
+
+        sdk = CopsAndRobbersSDK.from_config(args.config)
+        training = TrainingConfig(episodes=args.episodes, seed=sdk.config.random_seed)
+        result = (
+            train_staged(sdk.config, training)[0]
+            if args.staged
+            else IQLTrainer(sdk.config, training).train()
+        )
+        outputs = save_training_outputs(result, args.output)
+        comparison = save_baseline_comparison(sdk.config, result, args.output)
+        print(
+            json.dumps(
+                {
+                    "episodes": len(result.metrics),
+                    "centralized_transitions": result.centralized_transitions,
+                    "comparison_role_wins": comparison,
+                    "outputs": {name: str(path) for name, path in outputs.items()},
+                },
+                indent=2,
+            )
+        )
         return 0
     raise RuntimeError(f"unsupported command: {args.command}")
 

@@ -33,15 +33,15 @@ Status legend: `[ ]` not started, `[~]` in progress, `[x]` complete, `[!]` block
 
 ## P4 - IQL baseline
 
-- [ ] **P4.1** Specify observation/action encodings and replay schema. **DoD:** shapes, masking, terminal flags, and seed behavior are documented and tested.
-- [ ] **P4.2** Implement independent learners. **DoD:** target/update equations have unit tests and a tiny deterministic environment shows learning signal.
-- [ ] **P4.3** Train and evaluate IQL. **DoD:** checkpoints, learning/loss curves, config, seeds, and held-out comparison with heuristics are reproducible.
-- [ ] **P4.4** Analyze non-stationarity. **DoD:** summary reports instability evidence, limitations, and no unsupported convergence claim.
+- [x] **P4.1** Specify observation/action encodings and replay schema. **DoD:** local encoding, movement masking, terminal flags, seeded replay, and centralized trace boundaries are implemented and tested.
+- [x] **P4.2** Implement independent learners. **DoD:** tabular Bellman update has an exact unit test and smoke training populates both Q-tables.
+- [~] **P4.3** Train and evaluate IQL. **DoD:** JSON checkpoints, required plots, staged training, and fixed-opponent comparisons run; robust multi-seed held-out evaluation remains pending.
+- [~] **P4.4** Analyze non-stationarity. **DoD:** limitations and non-convergence warning are recorded; multi-seed instability evidence remains pending.
 
 ## P5 - CTDE/value factorization
 
 - [ ] **P5.1** Freeze the competitive training formulation. **DoD:** document rewards/mixer objective and why it is a simplified empirical CTDE comparison.
-- [ ] **P5.2** Implement centralized replay and VDN training. **DoD:** mixer uses global/joint data only in training and exported policies require local inputs only.
+- [~] **P5.2** Implement centralized replay and VDN training. **DoD:** a bounded centralized training trace stores global/joint transitions while exported IQL policies remain local-only; an actual VDN mixer is not implemented.
 - [ ] **P5.3** Add CTDE leakage and IGM tests. **DoD:** execution boundary rejects global state; VDN additivity/argmax consistency is tested on controlled tensors.
 - [ ] **P5.4** Compare VDN with IQL/baselines. **DoD:** same held-out seeds and metrics; curves and limitations recorded.
 - [ ] **P5.5 Optional** Add QMIX. **DoD:** monotonic mixer gradients are non-negative, IGM test passes, and comparison is fair. Remains optional if schedule/risk gate fails.

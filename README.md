@@ -2,7 +2,7 @@
 
 A documentation-first multi-agent reinforcement learning (MARL) project for Bar-Ilan University Vibe Coding Workshop Exercise 06. The planned product is a configurable grid-world match between an autonomous cop and thief, with partial observations, baseline policies, CTDE-inspired learning, a GUI, two MCP endpoints, and one final JSON email report.
 
-> **Status:** the `uv` scaffold, deterministic environment, random/heuristic baseline agents, resilient six-game runner, SDK, headless CLI, Tkinter GUI, and JSON report preview are implemented. MARL training, MCP, and live Gmail delivery are not implemented.
+> **Status:** the deterministic environment, baseline agents, six-game runner, SDK/CLI, Tkinter GUI, tabular IQL training, sample analysis plots, and JSON report preview are implemented. VDN/QMIX, MCP, and live Gmail delivery are not implemented.
 
 ## Source of truth
 
@@ -20,7 +20,7 @@ See [`docs/PRD.md`](docs/PRD.md), [`docs/PLAN.md`](docs/PLAN.md), and [`docs/TOD
 - A sub-game ends on capture or after 25 completed moves.
 - The cop may place up to five blocking barriers; placing one consumes its action.
 - Both agents execute from local observations. Global state is restricted to centralized training, evaluation instrumentation, and rendering.
-- Seeded random and local-observation heuristic agents provide implemented baselines; IQL remains the next learning baseline, followed by a scoped VDN comparison.
+- Seeded random and local-observation heuristic agents plus tabular IQL provide implemented baselines. Competitive VDN/QMIX remain explicitly scoped extensions.
 - A GUI renders the grid, agents, barriers, sub-game, step, score, and winner.
 - Separate cop and thief MCP services run locally on different ports before any cloud deployment.
 - After six valid sub-games, the reporter creates one JSON email body. Dry-run is mandatory; live Gmail delivery is opt-in.
@@ -79,7 +79,19 @@ uv run python -m cops_and_robbers_rl.main gui
 uv run cops-and-robbers gui --config config/default_game.yaml
 ```
 
-Training/evaluation, MCP service, and Gmail commands remain future interfaces and are intentionally absent. The implemented CLI and GUI call the SDK; future consumers must do the same.
+Robust multi-seed research evaluation, MCP service, and Gmail commands remain future interfaces. The implemented CLI and GUI call the SDK; future consumers must do the same.
+
+Train independent Q-learners and generate JSON metrics, checkpoints, learning curves, a loss curve, and a fair fixed-opponent baseline comparison:
+
+```powershell
+# Quick 5x5 run
+uv run python -m cops_and_robbers_rl.main train --episodes 200
+
+# Curriculum: 2x2 sanity, 3x3 calibration, 4x4 partial observation, 5x5 final
+uv run python -m cops_and_robbers_rl.main train --staged --episodes 200
+```
+
+Outputs are written under `results/metrics/`, `results/models/`, and `results/plots/`. The committed SVGs are a 40-episode-per-stage smoke run, not evidence of convergence or superiority.
 
 ## Test and quality gates
 
