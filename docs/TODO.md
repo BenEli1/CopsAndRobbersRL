@@ -21,13 +21,13 @@ Status legend: `[ ]` not started, `[~]` in progress, `[x]` complete, `[!]` block
 - [x] **P2.1** Implement typed actions, state, configs, and results. **DoD:** immutable typed models and requested boundary tests pass.
 - [x] **P2.2** Implement reset and spawn invariants. **DoD:** seeded engines create legal distinct positions and fixed invalid positions are rejected.
 - [x] **P2.3** Implement action validation, barriers, movement, capture, and timeout. **DoD:** requested movement, capture, barrier, blocking, limit, and timeout tests pass deterministically.
-- [~] **P2.4** Implement local observation and training-only global state. **DoD:** radius/masking and typed debug/training access are complete; future learned-policy boundary tests remain deferred.
-- [~] **P2.5** Implement scoring and six-sub-game orchestration. **DoD:** authoritative scoring and six-result aggregation are complete; policy technical-failure retries remain deferred.
+- [x] **P2.4** Implement local observation and training-only global state. **DoD:** radius/masking, typed debug/training access, and execution-agent local-observation enforcement are tested.
+- [x] **P2.5** Implement scoring and six-sub-game orchestration. **DoD:** authoritative scoring, six valid results, and bounded retry of technical agent failures are tested.
 
 ## P3 - SDK and baseline agents
 
 - [x] **P3.1** Implement the public SDK facade and DTOs. **DoD:** all deterministic-engine workflows used to date are callable without importing internal modules.
-- [ ] **P3.2** Implement random and heuristic policies. **DoD:** seeded random behavior is reproducible; heuristic cop pursues and heuristic thief evades without privileged state.
+- [x] **P3.2** Implement random and heuristic policies. **DoD:** seeded local random policies are reproducible; heuristic cop pursues and heuristic thief evades without privileged state.
 - [x] **P3.3** Add headless CLI through SDK. **DoD:** the documented command runs a default match and emits validated report-ready JSON to stdout.
 - [ ] **P3.4** Establish baseline evaluation. **DoD:** multiple fixed seeds produce recorded win/capture/survival metrics with configs and uncertainty summary.
 
@@ -65,7 +65,7 @@ Status legend: `[ ]` not started, `[~]` in progress, `[x]` complete, `[!]` block
 ## P8 - Reporting and Gmail
 
 - [ ] **P8.1** Implement exact report schema. **DoD:** positive/negative schema fixtures cover six games, totals, identities, ISO timestamps, and timezone.
-- [ ] **P8.2** Implement canonical dry-run output. **DoD:** exactly one `results/report_email_preview.json` is atomically written after six valid games; incomplete matches are rejected.
+- [x] **P8.2** Implement canonical dry-run output. **DoD:** one `results/report_email_preview.json` is atomically written only after six valid games complete.
 - [ ] **P8.3** Implement Gmail adapter through gatekeeper. **DoD:** default remains dry-run; credentials are environment-only; mocked delivery is idempotent and retry-safe.
 - [ ] **P8.4 Optional** Verify one live email. **DoD:** explicit operator consent/config, successful provider receipt, redacted audit log, and no credential artifact.
 
