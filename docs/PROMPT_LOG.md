@@ -113,3 +113,11 @@ Add random and heuristic cop/thief agents, enforce local-observation-only execut
 - Added `MatchRunner` with bounded retry so transient agent/runtime failures do not count as valid sub-games.
 - Added SDK and CLI selection for random/heuristic agents plus atomic `results/report_email_preview.json` output.
 - Added behavior, isolation, retry, six-game, and JSON tests. Local verification reached 20 passing tests before the final lint correction pass.
+
+# Prompt 5 — Simple Python GUI
+
+- **Request:** Add a simple Tkinter GUI as a thin SDK layer, required state and controls, practical image export, a `uv` command, documentation, and GUI-independent tests.
+- **Decision:** Added an SDK-owned `InteractiveSession` so Tkinter receives immutable snapshots and never imports or reproduces environment rules.
+- **Decision:** Heuristic agents are the default, with the existing `BaseAgent` contract retained as the extension point for learned agents.
+- **Decision:** Canvas export uses Tkinter's built-in color PostScript support to avoid an imaging dependency; a genuine PNG screenshot remains a submission-time task and is not fabricated.
+- **Validation:** `23 passed`; Ruff check and format pass; Tkinter 8.6 imports successfully.
