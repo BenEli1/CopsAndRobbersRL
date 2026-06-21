@@ -1,3 +1,7 @@
-# GUI screenshot placeholder
+# GUI screenshot
 
-The native Tkinter GUI is implemented. Replace this placeholder with a real PNG captured from the target submission machine before final submission. The GUI's **Export image** button writes a color PostScript snapshot to `results/screenshots/` without adding a third-party imaging dependency.
+The native Tkinter GUI is implemented and captured from the Windows target machine after a deterministic six-game demo:
+
+![Cops and Robbers RL Tkinter GUI](../evidence/gui-full-match.png)
+
+Reproduce it with `powershell -File scripts/capture_gui.ps1`. The GUI's **Export image** button also writes a color PostScript canvas snapshot to `results/screenshots/` without adding a third-party imaging dependency.

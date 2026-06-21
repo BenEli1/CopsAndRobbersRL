@@ -101,9 +101,12 @@ class GameWindow:
             messagebox.showinfo("Export complete", f"Saved {Path(destination).name}")
 
 
-def launch_gui(config_path: str | Path | None = None) -> None:
+def launch_gui(config_path: str | Path | None = None, *, demo: bool = False) -> None:
     """Launch the native GUI with heuristic baseline agents."""
     sdk = CopsAndRobbersSDK.from_config(config_path)
+    session = sdk.create_interactive_session()
+    if demo:
+        session.run_full_match()
     root = Tk()
-    GameWindow(root, sdk.create_interactive_session())
+    GameWindow(root, session)
     root.mainloop()

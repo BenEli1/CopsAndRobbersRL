@@ -13,7 +13,7 @@ Status legend: `[ ]` not started, `[~]` in progress, `[x]` complete, `[!]` block
 
 - [x] **P1.1** Create `pyproject.toml` and package skeleton using `uv`. **DoD:** `uv sync --extra dev` succeeds from a clean checkout; no `requirements.txt`; package version starts at `1.00`.
 - [~] **P1.2** Add config schemas and example files. **DoD:** default game schema/config is complete and strictly validated; training/MCP/Gmail configs remain deferred to their phases.
-- [ ] **P1.3** Establish CI/quality tooling. **DoD:** pytest, coverage >=85%, Ruff check/format, and secret scan commands run in CI.
+- [x] **P1.3** Establish CI/quality tooling. **DoD:** pytest, coverage >=85%, Ruff check/format, and secret scanning run in CI.
 - [~] **P1.4** Add `.env-example`, ignore rules, paths, structured logging, and version service. **DoD:** environment placeholders and ignore rules exist; structured redacted logging and secret-scan fixtures remain pending.
 
 ## P2 - Deterministic environment (TDD)
@@ -51,7 +51,7 @@ Status legend: `[ ]` not started, `[~]` in progress, `[x]` complete, `[!]` block
 
 - [x] **P6.1** Build SDK-backed GUI view model and renderer. **DoD:** Tkinter imports only the public SDK session/DTO and contains no transition or scoring rules.
 - [x] **P6.2** Display required state and controls. **DoD:** grid, labeled agents/barriers, sub-game, move, scores, winner, reset/step/run controls are visible beyond color alone.
-- [~] **P6.3** Add screenshot workflow. **DoD:** PostScript export is implemented and a placeholder is documented; a real target-machine screenshot is still required before submission.
+- [x] **P6.3** Add screenshot workflow. **DoD:** PostScript export and a reproducible native Windows PNG capture are implemented; real GUI evidence is linked from the teacher index.
 - [ ] **P6.4** Test responsiveness. **DoD:** match/training work does not block the event loop and close/pause behavior is covered.
 
 ## P7 - MCP communication
@@ -73,7 +73,7 @@ Status legend: `[ ]` not started, `[~]` in progress, `[x]` complete, `[!]` block
 
 - [ ] **P9.1** Complete experiments and plots. **DoD:** baselines, IQL, and completed CTDE methods use documented seeds/configs and honest statistical summaries.
 - [ ] **P9.2** Update `SUMMARY_REPORT.md`. **DoD:** every placeholder is replaced by a link to real generated evidence or explicitly marked not implemented.
-- [ ] **P9.3** Final security and quality audit. **DoD:** clean checkout passes setup, tests, coverage, lint, format, secret scan, headless match, and dry-run report.
+- [~] **P9.3** Final security and quality audit. **DoD:** local tests, coverage, lint, format, headless match, and dry-run report pass; first CI/secret-scan run remains pending.
 - [ ] **P9.4** Documentation audit. **DoD:** README commands are exercised, diagrams match code, PROMPT_LOG is current, and no future feature is presented as complete.
 - [ ] **P9.5** Tag submission version. **DoD:** meaningful Git history, chosen license, credits, release notes, and immutable version tag.
 

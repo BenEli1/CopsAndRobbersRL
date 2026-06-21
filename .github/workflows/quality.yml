@@ -1,0 +1,36 @@
+name: quality
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  test-and-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - name: Install locked development environment
+        run: uv sync --locked --extra dev
+      - name: Test with coverage gate
+        run: uv run pytest --cov=cops_and_robbers_rl --cov-report=term-missing --cov-fail-under=85
+      - name: Ruff lint
+        run: uv run ruff check .
+      - name: Ruff formatting
+        run: uv run ruff format --check .
+
+  secret-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Scan Git history for credentials
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
