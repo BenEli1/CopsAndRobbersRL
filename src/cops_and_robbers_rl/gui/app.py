@@ -12,12 +12,13 @@ from cops_and_robbers_rl.sdk import (
 )
 
 CELL_SIZE = 76
+ANIMATION_DELAY_MS = 140
 
 
 class GameWindow:
     """Render immutable SDK snapshots and forward explicit user commands."""
 
-    def __init__(self, root: Tk, session: InteractiveSession) -> None:
+    def __init__(self, root: Tk, session: InteractiveSession, *, autoplay: bool = False) -> None:
         self.root = root
         self.session = session
         self.round_text = StringVar()
@@ -26,12 +27,16 @@ class GameWindow:
         self.thief_score_text = StringVar()
         self.status_text = StringVar()
         self.progress = DoubleVar()
+        self.animating = False
         root.title("Cops and Robbers RL")
         root.geometry("820x660")
         root.resizable(False, False)
         configure_theme(root)
         self._build_layout()
         self.render(session.snapshot)
+        root.bind("<space>", lambda _event: self._toggle_animation())
+        if autoplay:
+            root.after(350, self._run_full_match)
 
     def _build_layout(self) -> None:
         header = ttk.Frame(self.root, style="Header.TFrame", padding=(30, 16))
@@ -91,17 +96,18 @@ class GameWindow:
             ("↻  Reset", self._reset, "Ghost.TButton"),
             ("Step move", self._step, "Secondary.TButton"),
             ("Finish game", self._run_sub_game, "Secondary.TButton"),
-            ("▶  Run full match", self._run_full_match, "Accent.TButton"),
+            ("▶  Animate match", self._toggle_animation, "Accent.TButton"),
             ("Export", self._export, "Ghost.TButton"),
         )
+        self.action_buttons: list[ttk.Button] = []
         for column, (text, command, style) in enumerate(actions):
-            ttk.Button(controls, text=text, command=command, style=style).grid(
-                row=0, column=column, padx=5, sticky="ew"
-            )
+            button = ttk.Button(controls, text=text, command=command, style=style)
+            button.grid(row=0, column=column, padx=5, sticky="ew")
+            self.action_buttons.append(button)
             controls.columnconfigure(column, weight=1)
         ttk.Label(
             controls,
-            text="● COP     ● THIEF     ■ BARRIER        deterministic seed 42",
+            text="● COP     ● THIEF     ■ BARRIER        SPACE pauses animation",
             style="Footer.TLabel",
         ).grid(row=1, column=0, columnspan=5, pady=(7, 0))
 
@@ -237,16 +243,50 @@ class GameWindow:
         self.canvas.create_text((x0 + x1) / 2, (y0 + y1) / 2, text="B", fill="white")
 
     def _reset(self) -> None:
+        self._stop_animation()
         self.render(self.session.reset())
 
     def _step(self) -> None:
+        if self.animating:
+            return
         self.render(self.session.step())
 
     def _run_sub_game(self) -> None:
+        if self.animating:
+            return
         self.render(self.session.run_sub_game())
 
     def _run_full_match(self) -> None:
-        self.render(self.session.run_full_match())
+        self._stop_animation()
+        self.render(self.session.reset())
+        self.animating = True
+        self.action_buttons[3].configure(text="Ⅱ  Pause match")
+        self.root.after(ANIMATION_DELAY_MS, self._animation_tick)
+
+    def _toggle_animation(self) -> None:
+        if self.animating:
+            self._stop_animation()
+            return
+        if self.session.snapshot.full_match_complete:
+            self.render(self.session.reset())
+        self.animating = True
+        self.action_buttons[3].configure(text="Ⅱ  Pause match")
+        self.root.after(ANIMATION_DELAY_MS, self._animation_tick)
+
+    def _stop_animation(self) -> None:
+        self.animating = False
+        if hasattr(self, "action_buttons"):
+            self.action_buttons[3].configure(text="▶  Animate match")
+
+    def _animation_tick(self) -> None:
+        if not self.animating:
+            return
+        snapshot = self.session.advance_match()
+        self.render(snapshot)
+        if snapshot.full_match_complete:
+            self._stop_animation()
+            return
+        self.root.after(ANIMATION_DELAY_MS, self._animation_tick)
 
     def _export(self) -> None:
         DEFAULT_SCREENSHOT_DIR.mkdir(parents=True, exist_ok=True)
@@ -265,8 +305,6 @@ def launch_gui(config_path: str | Path | None = None, *, demo: bool = False) -> 
     """Launch the native GUI with heuristic baseline agents."""
     sdk = CopsAndRobbersSDK.from_config(config_path)
     session = sdk.create_interactive_session()
-    if demo:
-        session.run_full_match()
     root = Tk()
-    GameWindow(root, session)
+    GameWindow(root, session, autoplay=demo)
     root.mainloop()

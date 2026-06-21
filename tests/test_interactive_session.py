@@ -49,3 +49,16 @@ def test_interactive_full_match_runs_six_games_and_reset_clears_scores() -> None
     assert reset.sub_game_id == 1
     assert reset.match_score.cop == reset.match_score.thief == 0
     assert not reset.full_match_complete
+
+
+def test_interactive_match_can_advance_one_animation_frame_at_a_time() -> None:
+    session = CopsAndRobbersSDK.from_config().create_interactive_session()
+
+    frames = [session.snapshot]
+    while not frames[-1].full_match_complete:
+        frames.append(session.advance_match())
+
+    assert len(frames) > 6
+    assert {frame.sub_game_id for frame in frames} == set(range(1, 7))
+    assert frames[-1].match_score.cop >= 30
+    assert frames[-1].match_score.thief >= 30

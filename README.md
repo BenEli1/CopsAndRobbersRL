@@ -152,7 +152,7 @@ The SDK will validate ranges and reject unknown or unsafe values before a match 
 
 ## GUI
 
-The Tkinter GUI is a read-only dashboard over SDK snapshots. It uses a themed tactical board, coordinate labels, role-colored score tiles, move progress, a six-game series tracker, compact legend, and a clear primary action while preserving labeled cop (`C`), thief (`T`), and barriers (`B`). Controls reset or advance one move, finish the current sub-game, run all six sub-games, and export the canvas as color PostScript under `results/screenshots/`.
+The Tkinter GUI is a read-only dashboard over SDK snapshots. It uses a themed tactical board, coordinate labels, role-colored score tiles, move progress, a six-game series tracker, compact legend, and a clear primary action while preserving labeled cop (`C`), thief (`T`), and barriers (`B`). **Animate match** plays all six games move-by-move without blocking Tkinter; Space pauses or resumes. Other controls reset, advance one move, finish the current sub-game, and export the canvas as color PostScript under `results/screenshots/`.
 
 The run buttons intentionally complete immediately rather than animate. Learned policies can later be supplied through the same `BaseAgent` interface without changing the renderer. Automated tests cover the display-independent interactive session; opening a native window requires a desktop with Tk 8.6.
 

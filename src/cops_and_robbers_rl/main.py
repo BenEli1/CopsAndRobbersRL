@@ -40,7 +40,7 @@ def build_parser() -> argparse.ArgumentParser:
     gui.add_argument(
         "--demo",
         action="store_true",
-        help="open the GUI on a completed deterministic six-game match",
+        help="open the GUI and animate a deterministic six-game match",
     )
     train = subparsers.add_parser("train", help="train tabular independent Q-learners")
     train.add_argument("--config", default=str(DEFAULT_GAME_CONFIG))

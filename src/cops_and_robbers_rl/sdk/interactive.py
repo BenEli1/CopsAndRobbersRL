@@ -115,6 +115,19 @@ class InteractiveSession:
         self._full_match_complete = True
         return self.snapshot
 
+    def advance_match(self) -> InteractiveSnapshot:
+        """Advance one animation frame, including sub-game transitions."""
+        if self._full_match_complete:
+            return self.snapshot
+        if not self._engine.state.terminal:
+            return self.step()
+        next_sub_game = self._engine.state.sub_game_id + 1
+        if next_sub_game > self.config.num_games:
+            self._full_match_complete = True
+        else:
+            self._engine = self._new_engine(next_sub_game)
+        return self.snapshot
+
     def _new_engine(self, sub_game_id: int) -> GameEngine:
         seed = self.config.random_seed + sub_game_id - 1
         self.cop_agent.reset(seed)
