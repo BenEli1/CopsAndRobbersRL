@@ -22,18 +22,19 @@ class GameWindow:
         self.session = session
         self.round_text = StringVar()
         self.move_text = StringVar()
-        self.score_text = StringVar()
+        self.cop_score_text = StringVar()
+        self.thief_score_text = StringVar()
         self.status_text = StringVar()
         self.progress = DoubleVar()
         root.title("Cops and Robbers RL")
-        root.geometry("980x680")
+        root.geometry("820x660")
         root.resizable(False, False)
         configure_theme(root)
         self._build_layout()
         self.render(session.snapshot)
 
     def _build_layout(self) -> None:
-        header = ttk.Frame(self.root, style="Header.TFrame", padding=(28, 14))
+        header = ttk.Frame(self.root, style="Header.TFrame", padding=(30, 16))
         header.pack(fill="x")
         ttk.Label(header, text="COPS & ROBBERS", style="Title.TLabel").grid(
             row=0, column=0, sticky="w"
@@ -45,15 +46,21 @@ class GameWindow:
         ).grid(row=1, column=0, sticky="w", pady=(3, 0))
         ttk.Label(
             header,
-            text="SDK BACKED  /  LOCAL OBSERVATIONS",
+            text="●  SDK BACKED   ·   LOCAL OBSERVATIONS",
             style="Badge.TLabel",
         ).grid(row=0, column=1, rowspan=2, sticky="e")
         header.columnconfigure(0, weight=1)
 
-        body = ttk.Frame(self.root, style="Page.TFrame", padding=(28, 16, 28, 12))
+        body = ttk.Frame(self.root, style="Page.TFrame", padding=(30, 18, 30, 12))
         body.pack(fill="both", expand=True)
-        board_card = ttk.Frame(body, style="Card.TFrame", padding=16)
+        board_card = ttk.Frame(body, style="Card.TFrame", padding=(16, 12, 16, 16))
         board_card.grid(row=0, column=0, sticky="nsew", padx=(0, 20))
+        board_heading = ttk.Frame(board_card, style="Card.TFrame")
+        board_heading.pack(fill="x", pady=(0, 10))
+        ttk.Label(board_heading, text="TACTICAL GRID", style="SectionTitle.TLabel").pack(
+            side="left"
+        )
+        ttk.Label(board_heading, text="5 x 5 ARENA", style="SectionMeta.TLabel").pack(side="right")
         self.canvas = Canvas(
             board_card,
             width=5 * CELL_SIZE,
@@ -67,7 +74,7 @@ class GameWindow:
         panel.grid(row=0, column=1, sticky="nsew")
         self._metric(panel, "MATCH", self.round_text, 0)
         self._metric(panel, "PROGRESS", self.move_text, 1)
-        self._metric(panel, "SCORE", self.score_text, 2)
+        self._scoreboard(panel).grid(row=2, column=0, sticky="ew", pady=(0, 6))
         self._metric(panel, "STATUS", self.status_text, 3, accent=True)
         ttk.Progressbar(
             panel,
@@ -75,16 +82,17 @@ class GameWindow:
             maximum=100,
             style="Game.Horizontal.TProgressbar",
         ).grid(row=4, column=0, sticky="ew", pady=(4, 8))
-        self._legend(panel).grid(row=5, column=0, sticky="ew")
+        self._series(panel).grid(row=5, column=0, sticky="ew")
+        panel.columnconfigure(0, weight=1)
 
-        controls = ttk.Frame(self.root, style="Controls.TFrame", padding=(28, 10, 28, 12))
+        controls = ttk.Frame(self.root, style="Controls.TFrame", padding=(30, 12, 30, 14))
         controls.pack(fill="x")
         actions = (
-            ("Reset match", self._reset, "Secondary.TButton"),
-            ("Step", self._step, "Secondary.TButton"),
-            ("Finish sub-game", self._run_sub_game, "Secondary.TButton"),
-            ("Run full match", self._run_full_match, "Accent.TButton"),
-            ("Export board", self._export, "Secondary.TButton"),
+            ("↻  Reset", self._reset, "Ghost.TButton"),
+            ("Step move", self._step, "Secondary.TButton"),
+            ("Finish game", self._run_sub_game, "Secondary.TButton"),
+            ("▶  Run full match", self._run_full_match, "Accent.TButton"),
+            ("Export", self._export, "Ghost.TButton"),
         )
         for column, (text, command, style) in enumerate(actions):
             ttk.Button(controls, text=text, command=command, style=style).grid(
@@ -93,7 +101,7 @@ class GameWindow:
             controls.columnconfigure(column, weight=1)
         ttk.Label(
             controls,
-            text="Blue = cop  |  Red = thief  |  Slate = barrier",
+            text="● COP     ● THIEF     ■ BARRIER        deterministic seed 42",
             style="Footer.TLabel",
         ).grid(row=1, column=0, columnspan=5, pady=(7, 0))
 
@@ -114,16 +122,35 @@ class GameWindow:
             anchor="w", pady=(4, 0)
         )
 
-    def _legend(self, parent: ttk.Frame) -> ttk.Frame:
-        legend = ttk.Frame(parent, style="Card.TFrame", padding=10)
-        ttk.Label(legend, text="LIVE BOARD", style="MetricTitle.TLabel").pack(anchor="w")
-        ttk.Label(
-            legend,
-            text="Seed 42 / heuristic policies\n6 sub-games / 25 move limit",
-            style="Body.TLabel",
-            justify="left",
-        ).pack(anchor="w", pady=(4, 0))
-        return legend
+    def _scoreboard(self, parent: ttk.Frame) -> ttk.Frame:
+        scoreboard = ttk.Frame(parent, style="Page.TFrame")
+        for column, (role, variable, style) in enumerate(
+            (
+                ("COP", self.cop_score_text, "CopScore.TFrame"),
+                ("THIEF", self.thief_score_text, "ThiefScore.TFrame"),
+            )
+        ):
+            tile = ttk.Frame(scoreboard, style=style, padding=(12, 9))
+            tile.grid(row=0, column=column, sticky="ew", padx=(0, 4) if column == 0 else (4, 0))
+            ttk.Label(tile, text=role, style=f"{role.title()}ScoreTitle.TLabel").pack(anchor="w")
+            ttk.Label(tile, textvariable=variable, style=f"{role.title()}ScoreValue.TLabel").pack(
+                anchor="w", pady=(2, 0)
+            )
+            scoreboard.columnconfigure(column, weight=1)
+        return scoreboard
+
+    def _series(self, parent: ttk.Frame) -> ttk.Frame:
+        series = ttk.Frame(parent, style="Card.TFrame", padding=(12, 9))
+        ttk.Label(series, text="MATCH SERIES", style="MetricTitle.TLabel").pack(anchor="w")
+        self.series_canvas = Canvas(
+            series,
+            width=250,
+            height=34,
+            background=COLORS["card"],
+            highlightthickness=0,
+        )
+        self.series_canvas.pack(fill="x", pady=(4, 0))
+        return series
 
     def render(self, snapshot: InteractiveSnapshot) -> None:
         """Draw one renderer-safe snapshot without applying game rules."""
@@ -163,11 +190,28 @@ class GameWindow:
             winner = f"{winner} - match complete"
         self.round_text.set(f"Sub-game {snapshot.sub_game_id} of {snapshot.num_games}")
         self.move_text.set(f"Move {snapshot.moves_completed} of {snapshot.max_moves}")
-        self.score_text.set(
-            f"Cop {snapshot.match_score.cop}  /  Thief {snapshot.match_score.thief}"
-        )
+        self.cop_score_text.set(str(snapshot.match_score.cop))
+        self.thief_score_text.set(str(snapshot.match_score.thief))
         self.status_text.set(winner)
         self.progress.set(100 * snapshot.moves_completed / max(snapshot.max_moves, 1))
+        self._render_series(snapshot.sub_game_id, snapshot.num_games, snapshot.full_match_complete)
+
+    def _render_series(self, current: int, total: int, complete: bool) -> None:
+        self.series_canvas.delete("all")
+        for index in range(total):
+            x = 16 + index * 40
+            played = index + 1 < current or complete
+            active = index + 1 == current and not complete
+            fill = COLORS["accent"] if played else COLORS["accent_card"] if active else "#263652"
+            outline = COLORS["accent"] if played or active else COLORS["muted"]
+            self.series_canvas.create_oval(x, 6, x + 22, 28, fill=fill, outline=outline, width=2)
+            self.series_canvas.create_text(
+                x + 11,
+                17,
+                text=str(index + 1),
+                fill=COLORS["page"] if played else COLORS["text"],
+                font=("Segoe UI", 8, "bold"),
+            )
 
     def _agent(self, row: int, column: int, color: str, label: str) -> None:
         margin = 15

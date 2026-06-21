@@ -32,6 +32,8 @@ def configure_theme(root: Tk) -> None:
     style.configure("Controls.TFrame", background=COLORS["header"])
     style.configure("Card.TFrame", background=COLORS["card"])
     style.configure("AccentCard.TFrame", background=COLORS["accent_card"])
+    style.configure("CopScore.TFrame", background="#18376b")
+    style.configure("ThiefScore.TFrame", background="#592538")
     style.configure(
         "Title.TLabel",
         background=COLORS["header"],
@@ -50,6 +52,18 @@ def configure_theme(root: Tk) -> None:
         foreground=COLORS["accent"],
         padding=(12, 7),
         font=("Segoe UI", 8, "bold"),
+    )
+    style.configure(
+        "SectionTitle.TLabel",
+        background=COLORS["card"],
+        foreground=COLORS["text"],
+        font=("Segoe UI Semibold", 10),
+    )
+    style.configure(
+        "SectionMeta.TLabel",
+        background=COLORS["card"],
+        foreground=COLORS["muted"],
+        font=("Segoe UI", 8),
     )
     style.configure(
         "MetricTitle.TLabel",
@@ -81,6 +95,22 @@ def configure_theme(root: Tk) -> None:
         foreground=COLORS["muted"],
         font=("Segoe UI", 10),
     )
+    for role, background, foreground in (
+        ("Cop", "#18376b", "#7dd3fc"),
+        ("Thief", "#592538", "#fda4af"),
+    ):
+        style.configure(
+            f"{role}ScoreTitle.TLabel",
+            background=background,
+            foreground=foreground,
+            font=("Segoe UI", 8, "bold"),
+        )
+        style.configure(
+            f"{role}ScoreValue.TLabel",
+            background=background,
+            foreground=COLORS["text"],
+            font=("Segoe UI", 18, "bold"),
+        )
     style.configure(
         "Footer.TLabel",
         background=COLORS["header"],
@@ -96,6 +126,19 @@ def configure_theme(root: Tk) -> None:
         font=("Segoe UI", 9, "bold"),
     )
     style.map("Secondary.TButton", background=[("active", "#344766")])
+    style.configure(
+        "Ghost.TButton",
+        background=COLORS["header"],
+        foreground=COLORS["muted"],
+        borderwidth=1,
+        padding=(12, 10),
+        font=("Segoe UI", 9, "bold"),
+    )
+    style.map(
+        "Ghost.TButton",
+        background=[("active", "#1d2a44")],
+        foreground=[("active", COLORS["text"])],
+    )
     style.configure(
         "Accent.TButton",
         background="#0284c7",
