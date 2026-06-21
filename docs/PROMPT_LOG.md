@@ -121,3 +121,12 @@ Add random and heuristic cop/thief agents, enforce local-observation-only execut
 - **Decision:** Heuristic agents are the default, with the existing `BaseAgent` contract retained as the extension point for learned agents.
 - **Decision:** Canvas export uses Tkinter's built-in color PostScript support to avoid an imaging dependency; a genuine PNG screenshot remains a submission-time task and is not fabricated.
 - **Validation:** `23 passed`; Ruff check and format pass; Tkinter 8.6 imports successfully.
+
+## 2026-06-21 - Prompt 6: MARL training baseline and analysis
+
+- **Request:** Implement submission-safe IQL, replay/data collection, CTDE-inspired training, metrics, staged grids, plots, baseline comparison, persistence, tests, and honest VDN/QMIX scope.
+- **Decision:** Use tabular IQL to keep the baseline reproducible, inspectable, CPU-only, and directly compatible with `BaseAgent` and `MatchRunner`.
+- **Decision:** Restrict execution to encoded `LocalObservation`; place global state and joint actions only in `CentralizedTrainingTrace` inside the trainer.
+- **Decision:** Defer VDN/QMIX because cooperative IGM assumptions do not directly solve the competitive POSG. A documented extension contract defines the required theoretical and test gates.
+- **Evidence:** Generated real SVG curves and fixed-opponent baseline comparison from a 40-episode-per-stage curriculum smoke run. These are pipeline evidence, not convergence evidence.
+- **Validation:** 29 tests passed, coverage reached 88%, Ruff check/format passed, and all four SVG outputs parsed as valid XML.
