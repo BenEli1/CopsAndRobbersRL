@@ -13,3 +13,5 @@ htmlcov/
 /results/*
 !/results/plots/
 !/results/plots/*.svg
+benelirl-ex06.docx
+benelirl-ex06.pdf

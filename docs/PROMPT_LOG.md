@@ -130,3 +130,12 @@ Add random and heuristic cop/thief agents, enforce local-observation-only execut
 - **Decision:** Defer VDN/QMIX because cooperative IGM assumptions do not directly solve the competitive POSG. A documented extension contract defines the required theoretical and test gates.
 - **Evidence:** Generated real SVG curves and fixed-opponent baseline comparison from a 40-episode-per-stage curriculum smoke run. These are pipeline evidence, not convergence evidence.
 - **Validation:** 29 tests passed, coverage reached 88%, Ruff check/format passed, and all four SVG outputs parsed as valid XML.
+
+## 2026-06-21 - Prompt 7: local MCP communication
+
+- **Request:** Add separate local cop/thief MCP tools, configurable ports, environment-token placeholder, a gatekeeper, graceful dependency/server fallback, tests, CLI smoke, and documentation without requiring cloud deployment.
+- **Decision:** Pin the optional official Python MCP SDK to stable v1 (`mcp[cli]>=1.27,<2`) while keeping core installation and in-process contract smoke dependency-free.
+- **Decision:** Reject privileged/absolute fields at the schema boundary; role agents receive reconstructed `LocalObservation` only.
+- **Decision:** Keep auth disabled in the zero-secret default config but fail closed with constant-time comparison whenever enabled. Cloud OAuth/Bearer auth remains future work.
+- **Evidence:** Separate FastMCP processes started on configured ports 8101/8102, and the official streamable-HTTP client received valid cop/thief actions. No cloud service was deployed.
+- **Validation:** 39 tests passed, coverage reached 85.33%, Ruff check/format passed, and the dependency-safe CLI smoke succeeded with both configured roles.
