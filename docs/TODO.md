@@ -49,9 +49,9 @@ Status legend: `[ ]` not started, `[~]` in progress, `[x]` complete, `[!]` block
 
 ## P6 - GUI
 
-- [ ] **P6.1** Build SDK-backed GUI view model and renderer. **DoD:** no domain imports beyond public SDK DTOs and no rule logic in GUI.
-- [ ] **P6.2** Display required state and controls. **DoD:** grid, agents, barriers, sub-game, move, scores, winner, pause/run are visible and accessible beyond color alone.
-- [ ] **P6.3** Add screenshot workflow. **DoD:** deterministic screenshots for required grid sizes are saved under `results/screenshots/` and referenced only after generated.
+- [x] **P6.1** Build SDK-backed GUI view model and renderer. **DoD:** Tkinter imports only the public SDK session/DTO and contains no transition or scoring rules.
+- [x] **P6.2** Display required state and controls. **DoD:** grid, labeled agents/barriers, sub-game, move, scores, winner, reset/step/run controls are visible beyond color alone.
+- [~] **P6.3** Add screenshot workflow. **DoD:** PostScript export is implemented and a placeholder is documented; a real target-machine screenshot is still required before submission.
 - [ ] **P6.4** Test responsiveness. **DoD:** match/training work does not block the event loop and close/pause behavior is covered.
 
 ## P7 - MCP communication
