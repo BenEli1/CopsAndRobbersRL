@@ -1,5 +1,7 @@
 # PRD - MCP Communication
 
+> **Implementation status (2026-06-21):** separate FastMCP cop/thief services, strict local-observation/action schemas, configurable localhost ports, environment-token validation, bounded retry, local fallback, and a CLI contract smoke are implemented. A real two-process streamable-HTTP action smoke passed on ports 8101/8102. Cloud deployment, rate/queue limiting, and a full six-game remote match remain pending.
+
 ## 1. Purpose
 
 Provide two independent agent decision services - one cop and one thief - without moving game rules out of the SDK/environment. Localhost operation is mandatory before optional cloud deployment.
@@ -26,20 +28,15 @@ thief:
   host: 127.0.0.1
   port: 8102
 auth:
+  enabled: false
   token_env: MARL_MCP_TOKEN
 timeouts:
-  connect_seconds: 2
   action_seconds: 5
 retry:
   max_attempts: 2
-  base_delay_seconds: 0.25
-rate_limit:
-  requests_per_minute: 120
-  concurrent_max: 2
-  queue_max: 20
 ```
 
-The real token exists only in the environment. Config stores its variable name. Startup fails closed if auth is enabled and the token is missing or weak.
+The real token exists only in the environment. Config stores its variable name. Authentication is disabled in the zero-secret default config; when enabled, both client and server fail closed if the named environment variable is missing, and comparison is constant-time.
 
 ## 4. Tool contracts
 
@@ -49,9 +46,9 @@ Returns service role, API/schema version, policy/checkpoint version, readiness, 
 
 ### `choose_action`
 
-Request fields: `schema_version`, `request_id`, `match_id`, `sub_game_id`, `step`, role, local observation/history payload, legal-action mask, and optional deadline. Response fields: matching IDs, selected typed action, policy version, latency, and sanitized diagnostics.
+The implemented request fields are `schema_version`, `request_id`, `role`, and a local observation payload. The response echoes schema/request/role and returns a typed movement action plus a nullable barrier target. Match IDs, deadlines, history, policy metadata, and latency diagnostics are future-compatible additions rather than fabricated current fields.
 
-Servers validate size, role, monotonic step context if tracked, observation schema, and action mask. A service must not accept `GlobalTrainingState`, exact unseen opponent coordinates, another role's observation, or arbitrary file/model paths.
+Servers validate exact keys, schema version, role, local cell values, and response action. They reject global-state keys, absolute cop/thief coordinates, another role's observation, unsupported remote barrier targets, and arbitrary file/model paths. Request-size limits and monotonic step tracking remain future hardening.
 
 ### Optional `metadata`
 
@@ -59,7 +56,7 @@ Returns model architecture identifier, observation/action schema versions, and c
 
 ## 5. Authentication and security
 
-- Bearer/token authentication is mandatory for action and metadata tools, including localhost acceptance tests.
+- Shared-token validation is configurable for localhost and required when `auth.enabled` is true. A cloud version must replace the tool-argument placeholder with transport-level OAuth/Bearer authorization.
 - Compare tokens in constant-time where supported; reject missing/invalid tokens with no policy output.
 - Tokens are revocable and separately provisioned in cloud; rotation does not require code changes.
 - Logs redact authorization headers and avoid full observations unless a safe debug fixture is enabled.
@@ -83,7 +80,7 @@ Returns model architecture identifier, observation/action schema versions, and c
 
 ## 7. Local-first validation
 
-The required proof runs the services as separate processes on distinct ports and completes a six-valid-sub-game match through both MCP clients. Tests include health/readiness, valid action, invalid token, malformed observation, timeout, duplicate/stale IDs, service restart, and match recovery. In-process mocks support tests but are not sufficient evidence.
+The implemented CLI smoke exercises schemas, gatekeepers, and both role tools in process and reports whether the optional SDK is installed. A separate manual integration smoke started both FastMCP processes on distinct ports and invoked each through the official streamable-HTTP client. Completing a six-valid-sub-game remote match, authenticated network smoke, restart, duplicate/stale ID, and backpressure evidence remain acceptance work.
 
 ## 8. Cloud-ready design
 

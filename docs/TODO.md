@@ -14,7 +14,7 @@ Status legend: `[ ]` not started, `[~]` in progress, `[x]` complete, `[!]` block
 - [x] **P1.1** Create `pyproject.toml` and package skeleton using `uv`. **DoD:** `uv sync --extra dev` succeeds from a clean checkout; no `requirements.txt`; package version starts at `1.00`.
 - [~] **P1.2** Add config schemas and example files. **DoD:** default game schema/config is complete and strictly validated; training/MCP/Gmail configs remain deferred to their phases.
 - [ ] **P1.3** Establish CI/quality tooling. **DoD:** pytest, coverage >=85%, Ruff check/format, and secret scan commands run in CI.
-- [ ] **P1.4** Add `.env-example`, ignore rules, paths, structured logging, and version service. **DoD:** secret fixtures prove redaction and ignored files are absent from Git tracking.
+- [~] **P1.4** Add `.env-example`, ignore rules, paths, structured logging, and version service. **DoD:** environment placeholders and ignore rules exist; structured redacted logging and secret-scan fixtures remain pending.
 
 ## P2 - Deterministic environment (TDD)
 
@@ -56,9 +56,9 @@ Status legend: `[ ]` not started, `[~]` in progress, `[x]` complete, `[!]` block
 
 ## P7 - MCP communication
 
-- [ ] **P7.1** Implement schemas, auth, health, and action contracts. **DoD:** invalid payload/token tests pass and logs redact tokens/observations as configured.
-- [ ] **P7.2** Implement separate cop/thief localhost services. **DoD:** distinct processes/ports answer authenticated calls and cannot access opponent-private state.
-- [ ] **P7.3** Implement SDK remote policy adapter through gatekeeper. **DoD:** timeout, bounded retry, queue, backpressure, and failure classification tests pass.
+- [x] **P7.1** Implement schemas, auth, health, and action contracts. **DoD:** local-only observation schemas, structured actions, health metadata, and invalid-token rejection are tested; services emit no application observation/token logs.
+- [~] **P7.2** Implement separate cop/thief localhost services. **DoD:** distinct FastMCP processes/ports answered real streamable-HTTP calls; authenticated network evidence remains pending.
+- [~] **P7.3** Implement SDK remote policy adapter through gatekeeper. **DoD:** timeout, bounded retry, typed failure, and explicit local fallback are tested; queue/backpressure remain pending.
 - [ ] **P7.4** Run local end-to-end match. **DoD:** six valid sub-games complete using both services; technical failure recovery evidence is retained.
 - [ ] **P7.5 Optional** Deploy to cloud. **DoD:** TLS, secret manager, health probes, revocation, restricted access, and sanitized deployment guide are verified. Otherwise document as future work.
 

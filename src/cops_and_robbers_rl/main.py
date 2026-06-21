@@ -35,6 +35,9 @@ def build_parser() -> argparse.ArgumentParser:
     train.add_argument("--episodes", type=int, default=200)
     train.add_argument("--staged", action="store_true", help="train on 2x2, 3x3, 4x4, 5x5")
     train.add_argument("--output", type=Path, default=RESULTS_ROOT)
+    smoke = subparsers.add_parser("mcp-smoke", help="run dependency-safe local MCP contracts")
+    smoke.add_argument("--game-config", default=str(DEFAULT_GAME_CONFIG))
+    smoke.add_argument("--mcp-config", default=None)
     return parser
 
 
@@ -84,6 +87,11 @@ def main(argv: Sequence[str] | None = None) -> int:
                 indent=2,
             )
         )
+        return 0
+    if args.command == "mcp-smoke":
+        from cops_and_robbers_rl.mcp.smoke import run_local_smoke
+
+        print(json.dumps(run_local_smoke(args.game_config, args.mcp_config), indent=2))
         return 0
     raise RuntimeError(f"unsupported command: {args.command}")
 

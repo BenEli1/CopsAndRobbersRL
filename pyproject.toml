@@ -14,6 +14,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+mcp = [
+    "mcp[cli]>=1.27,<2",
+]
 dev = [
     "pytest>=8.3,<10",
     "pytest-cov>=6,<8",
@@ -22,6 +25,8 @@ dev = [
 
 [project.scripts]
 cops-and-robbers = "cops_and_robbers_rl.main:main"
+cops-mcp-cop = "cops_and_robbers_rl.mcp.cop_server:main"
+cops-mcp-thief = "cops_and_robbers_rl.mcp.thief_server:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/cops_and_robbers_rl"]

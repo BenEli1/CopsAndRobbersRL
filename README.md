@@ -2,7 +2,7 @@
 
 A documentation-first multi-agent reinforcement learning (MARL) project for Bar-Ilan University Vibe Coding Workshop Exercise 06. The planned product is a configurable grid-world match between an autonomous cop and thief, with partial observations, baseline policies, CTDE-inspired learning, a GUI, two MCP endpoints, and one final JSON email report.
 
-> **Status:** the deterministic environment, baseline agents, six-game runner, SDK/CLI, Tkinter GUI, tabular IQL training, sample analysis plots, and JSON report preview are implemented. VDN/QMIX, MCP, and live Gmail delivery are not implemented.
+> **Status:** the deterministic environment, baseline agents, SDK/CLI, Tkinter GUI, tabular IQL training, sample plots, local cop/thief MCP services, and JSON report preview are implemented. VDN/QMIX, cloud MCP deployment, and live Gmail delivery are not implemented.
 
 ## Source of truth
 
@@ -54,7 +54,13 @@ uv sync --extra dev
 Copy-Item .env-example .env
 ```
 
-`pyproject.toml`, `uv.lock`, and the default game config are present. Secrets belong only in a future `.env`, which is ignored by Git.
+Install the optional official MCP SDK only when running the two network services:
+
+```powershell
+uv sync --extra dev --extra mcp --system-certs
+```
+
+`pyproject.toml`, `uv.lock`, and the default configs are present. Secrets belong only in `.env` or process environment variables; `.env` is ignored by Git.
 
 ## Run
 
@@ -79,7 +85,7 @@ uv run python -m cops_and_robbers_rl.main gui
 uv run cops-and-robbers gui --config config/default_game.yaml
 ```
 
-Robust multi-seed research evaluation, MCP service, and Gmail commands remain future interfaces. The implemented CLI and GUI call the SDK; future consumers must do the same.
+Robust multi-seed research evaluation, cloud MCP deployment, and Gmail commands remain future interfaces. The implemented CLI and GUI call the SDK; future consumers must do the same.
 
 Train independent Q-learners and generate JSON metrics, checkpoints, learning curves, a loss curve, and a fair fixed-opponent baseline comparison:
 
@@ -92,6 +98,26 @@ uv run python -m cops_and_robbers_rl.main train --staged --episodes 200
 ```
 
 Outputs are written under `results/metrics/`, `results/models/`, and `results/plots/`. The committed SVGs are a 40-episode-per-stage smoke run, not evidence of convergence or superiority.
+
+## Local MCP communication
+
+The dependency-safe contract smoke uses both configured role tools in process. It works even when the optional SDK is absent:
+
+```powershell
+uv run python -m cops_and_robbers_rl.main mcp-smoke
+```
+
+For a real localhost run, install the `mcp` extra and start each role in a separate terminal:
+
+```powershell
+# Terminal 1 — http://127.0.0.1:8101/mcp
+uv run --extra mcp cops-mcp-cop --config config/mcp.yaml
+
+# Terminal 2 — http://127.0.0.1:8102/mcp
+uv run --extra mcp cops-mcp-thief --config config/mcp.yaml
+```
+
+Both servers expose `health` and structured `choose_action` tools. `choose_action` accepts local observation JSON only. To test token rejection, set `auth.enabled: true` in `config/mcp.yaml` and provide `MARL_MCP_TOKEN` through the environment; never put its value in YAML. `RemotePolicy` provides bounded retries and an explicitly configured local-agent fallback when the optional SDK or server is unavailable.
 
 ## Test and quality gates
 
@@ -144,6 +170,7 @@ Live delivery requires explicit configuration and credentials supplied through e
 | Repeated runs differ | Use the same config and `random_seed`; record package and config versions. |
 | An agent sees the full board | Treat as a CTDE leakage defect; execution accepts only local observation/history. |
 | MCP connection fails | Confirm both services use distinct configured ports, valid token, and localhost URLs. |
+| `install the optional 'mcp' extra` | Run `uv sync --extra mcp --system-certs`, or keep using the in-process smoke fallback. |
 | Match has fewer than six results | Technical failures do not count; rerun the failed sub-game before reporting. |
 | Gmail is not configured | Keep `dry_run: true`; inspect the preview JSON instead of sending. |
 | GUI cannot open / `$DISPLAY` error | Run the command on a desktop session with Tkinter available; CI tests only GUI-independent logic. |

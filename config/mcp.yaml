@@ -1,0 +1,15 @@
+schema_version: "1.00"
+transport: streamable-http
+cop:
+  host: 127.0.0.1
+  port: 8101
+thief:
+  host: 127.0.0.1
+  port: 8102
+auth:
+  enabled: false
+  token_env: MARL_MCP_TOKEN
+timeouts:
+  action_seconds: 5.0
+retry:
+  max_attempts: 2
