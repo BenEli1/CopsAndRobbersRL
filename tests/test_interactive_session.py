@@ -1,6 +1,14 @@
 """GUI-independent tests for the SDK interactive session."""
 
+from cops_and_robbers_rl.main import build_parser
 from cops_and_robbers_rl.sdk.sdk import CopsAndRobbersSDK
+
+
+def test_gui_demo_flag_is_exposed_by_cli() -> None:
+    args = build_parser().parse_args(["gui", "--demo"])
+
+    assert args.command == "gui"
+    assert args.demo is True
 
 
 def test_interactive_session_starts_with_renderable_default_board() -> None:

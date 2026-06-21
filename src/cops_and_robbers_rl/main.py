@@ -30,6 +30,11 @@ def build_parser() -> argparse.ArgumentParser:
     play.add_argument("--output", type=Path, default=DEFAULT_REPORT_PATH)
     gui = subparsers.add_parser("gui", help="launch the native Tkinter interface")
     gui.add_argument("--config", default=str(DEFAULT_GAME_CONFIG))
+    gui.add_argument(
+        "--demo",
+        action="store_true",
+        help="open the GUI on a completed deterministic six-game match",
+    )
     train = subparsers.add_parser("train", help="train tabular independent Q-learners")
     train.add_argument("--config", default=str(DEFAULT_GAME_CONFIG))
     train.add_argument("--episodes", type=int, default=200)
@@ -56,7 +61,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     if args.command == "gui":
         from cops_and_robbers_rl.gui import launch_gui
 
-        launch_gui(args.config)
+        launch_gui(args.config, demo=args.demo)
         return 0
     if args.command == "train":
         from cops_and_robbers_rl.marl.trainer import (

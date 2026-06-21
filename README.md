@@ -83,6 +83,9 @@ uv run python -m cops_and_robbers_rl.main gui
 
 # Equivalent installed command with an explicit configuration
 uv run cops-and-robbers gui --config config/default_game.yaml
+
+# Open a deterministic completed-match state for demonstrations
+uv run cops-and-robbers gui --demo
 ```
 
 Robust multi-seed research evaluation, cloud MCP deployment, and Gmail commands remain future interfaces. The implemented CLI and GUI call the SDK; future consumers must do the same.
@@ -130,6 +133,8 @@ uv run ruff format --check .
 
 Required gates are deterministic unit and integration tests, at least 85% coverage for implemented code, zero Ruff violations, no committed secrets, and reproducibility from a fixed seed. See the [test strategy](docs/PLAN.md#test-strategy).
 
+GitHub Actions enforces the locked install, coverage threshold, test suite, Ruff lint/format, and a history-wide Gitleaks credential scan on every push and pull request.
+
 ## Configuration
 
 Runtime values must never be hardcoded. Planned files are:
@@ -149,7 +154,7 @@ The implemented Tkinter GUI is a read-only renderer over SDK snapshots. It shows
 
 The run buttons intentionally complete immediately rather than animate. Learned policies can later be supplied through the same `BaseAgent` interface without changing the renderer. Automated tests cover the display-independent interactive session; opening a native window requires a desktop with Tk 8.6.
 
-[GUI screenshot placeholder](assets/gui/README.md) — replace with a real target-machine capture before submission.
+[Real GUI and command demo evidence](docs/TEACHER_EVIDENCE.md) is captured from the target machine and can be reproduced with the scripts under `scripts/`.
 
 ## Reports and Gmail safety
 
@@ -198,3 +203,5 @@ Follow docs-first development and TDD: update an approved PRD/PLAN/TODO item, wr
 - [Gmail reporting PRD](docs/PRD_gmail_reporting.md)
 - [Evidence-based summary report](docs/SUMMARY_REPORT.md)
 - [Prompt and decision log](docs/PROMPT_LOG.md)
+- [Teacher evidence index](docs/TEACHER_EVIDENCE.md)
+- [Cost and resource awareness](docs/COST_AND_RESOURCES.md)

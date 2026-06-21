@@ -139,3 +139,11 @@ Add random and heuristic cop/thief agents, enforce local-observation-only execut
 - **Decision:** Keep auth disabled in the zero-secret default config but fail closed with constant-time comparison whenever enabled. Cloud OAuth/Bearer auth remains future work.
 - **Evidence:** Separate FastMCP processes started on configured ports 8101/8102, and the official streamable-HTTP client received valid cop/thief actions. No cloud service was deployed.
 - **Validation:** 39 tests passed, coverage reached 85.33%, Ruff check/format passed, and the dependency-safe CLI smoke succeeded with both configured roles.
+
+## 2026-06-21 - Prompt 8: teacher-facing evidence and quality controls
+
+- **Request:** Push any unpublished work and prepare genuine demo screenshots and evidence aligned with assessment feedback on configuration/security, research, version history, cost, extensibility, and quality standards.
+- **Decision:** Add a deterministic `gui --demo` state plus Windows-native capture script so GUI evidence is reproducible and not fabricated.
+- **Decision:** Commit rendered captures of real headless-match and MCP smoke output, while keeping generated private JSON reports ignored.
+- **Decision:** Add GitHub Actions gates for locked setup, coverage, tests, Ruff lint/format, and Gitleaks history scanning.
+- **Decision:** Add a teacher evidence index and an explicit cost/resource scaling model; retain honest labels for multi-seed research, CTDE, cloud, and Gmail work that is not complete.
