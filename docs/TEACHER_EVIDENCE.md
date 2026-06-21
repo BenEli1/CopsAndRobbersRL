@@ -24,14 +24,14 @@ Reproduce on Windows with `powershell -File scripts/capture_gui.ps1`. The script
 |---|---|
 | Project planning | [PRD](PRD.md), [architecture/ADRs](PLAN.md), and phased [TODO](TODO.md) |
 | Code documentation | [README](../README.md), typed modules, docstrings, and mechanism PRDs |
-| Testing and quality | 40 tests, 85.14% coverage, Ruff lint/format, and [GitHub Actions workflow](../.github/workflows/quality.yml) |
-| UI and UX | Real native GUI screenshot above; renderer consumes immutable SDK snapshots only |
-| Configuration and security | Versioned YAML, strict validation, `.env-example`, ignored `.env`, local-only defaults, auth rejection tests, and automated secret scanning |
+| Testing and quality | 47 tests, 89.25% business-logic coverage, Ruff lint/format, and [GitHub Actions workflow](../.github/workflows/quality.yml) |
+| UI and UX | Real native screenshot of the themed dashboard above; renderer consumes immutable SDK snapshots only |
+| Configuration and security | Versioned game/MCP/Gmail YAML, strict validation, placeholder-only `.env-example`, ignored private data, auth rejection tests, and automated secret scanning |
 | Research and analysis | [Summary report](SUMMARY_REPORT.md), real [learning plots](../results/plots/learning_curve_cop.svg), [loss plot](../results/plots/loss_curve.svg), baseline comparison, limitations, and non-stationarity discussion |
 | Version management and AI workflow | Meaningful milestone commits and chronological [prompt/decision log](PROMPT_LOG.md) |
 | Cost awareness | Explicit [cost and resource model](COST_AND_RESOURCES.md) with scaling drivers and budget controls |
 | Extensibility | SDK boundary, agent interface, local-observation contract, MCP gatekeeper, and [QMIX extension contract](QMIX_EXTENSION.md) |
-| Quality standards | CI runs locked setup, coverage, tests, Ruff, formatting, and history-wide credential scanning on every push and PR |
+| Quality standards | CI runs locked setup, coverage, tests, Ruff, formatting, and history-wide credential scanning on every push and PR; see [final audit](FINAL_AUDIT.md) |
 
 ## Honest scope boundary
 

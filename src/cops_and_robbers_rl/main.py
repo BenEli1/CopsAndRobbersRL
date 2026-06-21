@@ -13,9 +13,10 @@ from cops_and_robbers_rl.agents import (
     RandomThiefAgent,
 )
 from cops_and_robbers_rl.environment.game_state import MatchResult, Role
+from cops_and_robbers_rl.reporting import ReportDelivery
 from cops_and_robbers_rl.runner.match_runner import DEFAULT_REPORT_PATH
 from cops_and_robbers_rl.sdk.sdk import CopsAndRobbersSDK
-from cops_and_robbers_rl.shared.paths import DEFAULT_GAME_CONFIG, RESULTS_ROOT
+from cops_and_robbers_rl.shared.paths import DEFAULT_GAME_CONFIG, DEFAULT_GMAIL_CONFIG, RESULTS_ROOT
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -28,6 +29,12 @@ def build_parser() -> argparse.ArgumentParser:
     play.add_argument("--thief-agent", choices=("heuristic", "random"), default="heuristic")
     play.add_argument("--seed", type=int, default=42)
     play.add_argument("--output", type=Path, default=DEFAULT_REPORT_PATH)
+    play.add_argument("--gmail-config", default=str(DEFAULT_GMAIL_CONFIG))
+    play.add_argument(
+        "--send-email",
+        action="store_true",
+        help="request delivery; config and environment credentials must also allow it",
+    )
     gui = subparsers.add_parser("gui", help="launch the native Tkinter interface")
     gui.add_argument("--config", default=str(DEFAULT_GAME_CONFIG))
     gui.add_argument(
@@ -55,8 +62,15 @@ def main(argv: Sequence[str] | None = None) -> int:
             _build_agent(Role.COP, args.cop_agent, args.seed),
             _build_agent(Role.THIEF, args.thief_agent, args.seed + 1),
             output_path=args.output,
+            gmail_config_path=args.gmail_config,
+            allow_send=args.send_email,
         )
-        print(json.dumps(_summary(result, sdk.last_technical_failures, args.output), indent=2))
+        print(
+            json.dumps(
+                _summary(result, sdk.last_technical_failures, args.output, sdk.last_delivery),
+                indent=2,
+            )
+        )
         return 0
     if args.command == "gui":
         from cops_and_robbers_rl.gui import launch_gui
@@ -107,18 +121,27 @@ def _build_agent(role: Role, kind: str, seed: int) -> BaseAgent:
     return HeuristicThiefAgent(seed=seed) if kind == "heuristic" else RandomThiefAgent(seed=seed)
 
 
-def _summary(result: MatchResult, technical_failures: int, output: Path) -> dict[str, object]:
+def _summary(
+    result: MatchResult,
+    technical_failures: int,
+    output: Path,
+    delivery: ReportDelivery | None = None,
+) -> dict[str, object]:
     report = result.to_report_dict()
     wins = {"cop": 0, "thief": 0}
     for game in report["sub_games"]:
         wins[game["winner"]] += 1
-    return {
+    summary = {
         "sub_games": len(report["sub_games"]),
         "wins": wins,
         "totals": report["totals"],
         "technical_failures_retried": technical_failures,
         "report": str(output),
     }
+    if delivery is not None:
+        summary["email_mode"] = delivery.mode
+        summary["email_preview"] = str(delivery.text_path)
+    return summary
 
 
 if __name__ == "__main__":

@@ -6,6 +6,7 @@ from cops_and_robbers_rl.agents.base_agent import BaseAgent
 from cops_and_robbers_rl.agents.random_agents import RandomCopAgent, RandomThiefAgent
 from cops_and_robbers_rl.environment.game_state import MatchResult, Student
 from cops_and_robbers_rl.environment.rules import GameEngine
+from cops_and_robbers_rl.reporting import GmailReporter, ReportDelivery, load_gmail_config
 from cops_and_robbers_rl.runner.match_runner import DEFAULT_REPORT_PATH, MatchRunner
 from cops_and_robbers_rl.sdk.interactive import InteractiveSession
 from cops_and_robbers_rl.shared.config import GameConfig, load_game_config
@@ -17,6 +18,7 @@ class CopsAndRobbersSDK:
     def __init__(self, config: GameConfig) -> None:
         self.config = config
         self.last_technical_failures = 0
+        self.last_delivery: ReportDelivery | None = None
 
     @classmethod
     def from_config(cls, path: str | Path | None = None) -> "CopsAndRobbersSDK":
@@ -65,10 +67,16 @@ class CopsAndRobbersSDK:
         thief_agent: BaseAgent | None = None,
         *,
         output_path: str | Path = DEFAULT_REPORT_PATH,
+        gmail_config_path: str | Path | None = None,
+        allow_send: bool = False,
     ) -> MatchResult:
-        """Run a match and save its exact JSON report preview."""
+        """Run a match, validate it, and create safe email preview artifacts."""
         result = self.run_match(cop_agent, thief_agent)
-        MatchRunner.save_report(result, output_path)
+        self.last_delivery = GmailReporter(load_gmail_config(gmail_config_path)).deliver(
+            result,
+            output_path,
+            allow_send=allow_send,
+        )
         return result
 
     def _runner(self, cop_agent: BaseAgent | None, thief_agent: BaseAgent | None) -> MatchRunner:

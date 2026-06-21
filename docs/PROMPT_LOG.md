@@ -154,3 +154,22 @@ Add random and heuristic cop/thief agents, enforce local-observation-only execut
 - **Decision:** Remove hardcoded identity and course-recipient data from code and documentation; load private report identity only from ignored environment variables.
 - **Decision:** Use synthetic placeholders in public report examples and expand ignore rules for documents, keys, certificates, and credential exports.
 - **Decision:** Audit tracked files, binary evidence, and reachable Git history rather than treating deletion from the latest commit as sufficient.
+
+## 2026-06-21 - Prompt 8: Gmail reporting and safe dry-run
+
+- **Request:** Generate the exact six-game JSON report, JSON/text previews, target/subject console output, and optional environment-credential Gmail delivery without committed secrets.
+- **Decision:** Validate the exact payload and authoritative totals before writing; atomically write both previews after the completed match.
+- **Decision:** Require config opt-in, CLI opt-in, environment credentials, and non-placeholder identity before SMTP delivery; missing values safely remain dry-run.
+- **Decision:** Keep the requested course recipient and group-aware subject in non-secret YAML while keeping sender, app password, and student identity outside Git.
+
+## 2026-06-21 - Prompt 9: final audit and bonus plan
+
+- **Request:** Audit Exercise 06 coverage, code/config/theory/evidence/reporting/MCP/tooling/security/doc consistency and document the inter-group bonus protocol without claiming completion.
+- **Decision:** Record pass/partial status in `FINAL_AUDIT.md`; keep multi-seed research, VDN/QMIX, remote MCP match, live Gmail, and bonus match as explicit limitations.
+- **Decision:** Define six role-swapped bonus games, canonical JSON reconciliation, mutual agreement, screenshots, and README evidence in `BONUS_PLAN.md`.
+
+## 2026-06-21 - Tkinter dashboard redesign
+
+- **Request:** Improve the basic native GUI.
+- **Decision:** Retain the SDK-only rendering boundary while adding a coherent dark theme, dashboard header, alternating grid, coordinates, agent depth/labels, metric cards, progress, legend, and clear action hierarchy.
+- **Evidence:** Regenerated and visually inspected the real target-machine screenshot after correcting DPI/taskbar clipping.

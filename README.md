@@ -2,15 +2,17 @@
 
 A documentation-first multi-agent reinforcement learning (MARL) project for Bar-Ilan University Vibe Coding Workshop Exercise 06. The planned product is a configurable grid-world match between an autonomous cop and thief, with partial observations, baseline policies, CTDE-inspired learning, a GUI, two MCP endpoints, and one final JSON email report.
 
-> **Status:** the deterministic environment, baseline agents, SDK/CLI, Tkinter GUI, tabular IQL training, sample plots, local cop/thief MCP services, and JSON report preview are implemented. VDN/QMIX, cloud MCP deployment, and live Gmail delivery are not implemented.
+> **Status:** the deterministic environment, baseline agents, SDK/CLI, polished Tkinter dashboard, tabular IQL training, sample plots, local cop/thief MCP services, and validated JSON/text Gmail dry-run are implemented. VDN/QMIX, cloud MCP deployment, and verified live Gmail delivery are not implemented.
 
 ## Source of truth
 
 Requirements are interpreted in this order:
 
-1. [`ex06.pdf`](ex06.pdf) - binding Exercise 06 rules.
-2. [`L10-MARL.pdf`](L10-MARL.pdf) - MARL theory and reference architecture.
-3. [`software_submission_guidelines-V3.pdf`](software_submission_guidelines-V3.pdf) - professional engineering standards.
+1. `ex06.pdf` - binding Exercise 06 rules.
+2. `L10-MARL.pdf` - MARL theory and reference architecture.
+3. `software_submission_guidelines-V3.pdf` - professional engineering standards.
+
+These course-provided source documents are intentionally ignored and not published in the repository.
 
 See [`docs/PRD.md`](docs/PRD.md), [`docs/PLAN.md`](docs/PLAN.md), and [`docs/TODO.md`](docs/TODO.md) before implementation.
 
@@ -88,7 +90,7 @@ uv run cops-and-robbers gui --config config/default_game.yaml
 uv run cops-and-robbers gui --demo
 ```
 
-Robust multi-seed research evaluation, cloud MCP deployment, and Gmail commands remain future interfaces. The implemented CLI and GUI call the SDK; future consumers must do the same.
+Robust multi-seed research evaluation and cloud MCP deployment remain future interfaces. The implemented CLI, GUI, and reporter call the SDK; future consumers must do the same.
 
 Train independent Q-learners and generate JSON metrics, checkpoints, learning curves, a loss curve, and a fair fixed-opponent baseline comparison:
 
@@ -144,13 +146,13 @@ Runtime values must never be hardcoded. Planned files are:
 | `config/default_game.yaml` | Grid size, six sub-games, 25 moves, barriers, scoring, observation radius, seed |
 | `config/training.yaml` | Algorithm, episodes, discount, optimizer, replay, exploration, evaluation seeds |
 | `config/mcp.yaml` | Cop/thief hosts and distinct ports, timeout, retry, token environment-variable name |
-| `config/gmail.example.yaml` | Recipient, subject, dry-run, credential environment-variable names |
+| `config/gmail.yaml` | Course recipient, group-aware subject, dry-run default, SMTP environment-variable names |
 
 The SDK will validate ranges and reject unknown or unsafe values before a match starts. Full contracts appear in the mechanism PRDs.
 
 ## GUI
 
-The implemented Tkinter GUI is a read-only renderer over SDK snapshots. It shows the configured grid, labeled cop (`C`), thief (`T`), barriers (`B`), current sub-game, move count, sub-game and cumulative scores, and terminal winner. Controls reset or advance one move, finish the current sub-game, run all six sub-games, and export the canvas as a color PostScript image under `results/screenshots/` by default.
+The Tkinter GUI is a read-only dashboard over SDK snapshots. It uses a themed board, coordinate labels, score/status cards, move progress, legend, and a clear primary action while preserving labeled cop (`C`), thief (`T`), and barriers (`B`). Controls reset or advance one move, finish the current sub-game, run all six sub-games, and export the canvas as color PostScript under `results/screenshots/`.
 
 The run buttons intentionally complete immediately rather than animate. Learned policies can later be supplied through the same `BaseAgent` interface without changing the renderer. Automated tests cover the display-independent interactive session; opening a native window requires a desktop with Tk 8.6.
 
@@ -158,13 +160,26 @@ The run buttons intentionally complete immediately rather than animate. Learned 
 
 ## Reports and Gmail safety
 
-The implemented CLI is dry-run only. After six valid sub-games, one report-ready JSON body is written atomically to:
+After exactly six valid sub-games, the reporter validates the assignment schema and authoritative totals, prints the target email and group-aware subject, and atomically writes both previews:
 
 ```text
 results/report_email_preview.json
+results/report_email_preview.txt
 ```
 
-Live delivery requires explicit configuration and credentials supplied through environment variables. Tokens, OAuth client secrets, app passwords, `.env`, and generated private reports must not be committed. See [`docs/PRD_gmail_reporting.md`](docs/PRD_gmail_reporting.md).
+Default `config/gmail.yaml` targets `rmisegal+marl@gmail.com`, uses `[MARL Exercise 06] {group_name} - Final Report`, and keeps `dry_run: true`. The JSON file is the exact report body; the text file shows `To`, `Subject`, and the same body.
+
+Real Gmail SMTP delivery requires all three gates: set `dry_run: false` in a private/local config, pass `--send-email`, and provide `GMAIL_SENDER` plus `GMAIL_APP_PASSWORD` in the environment. Missing credentials or placeholder student identity safely falls back to previews without crashing the match.
+
+```powershell
+# Safe default: no network send
+uv run cops-and-robbers play --output results/report_email_preview.json
+
+# Explicit opt-in; still requires dry_run: false and environment credentials
+uv run cops-and-robbers play --send-email --gmail-config config/gmail.yaml
+```
+
+Tokens, OAuth client secrets, app passwords, `.env`, student IDs, and generated private reports must not be committed. See [`docs/PRD_gmail_reporting.md`](docs/PRD_gmail_reporting.md).
 
 ## Troubleshooting
 
@@ -205,3 +220,5 @@ Follow docs-first development and TDD: update an approved PRD/PLAN/TODO item, wr
 - [Prompt and decision log](docs/PROMPT_LOG.md)
 - [Teacher evidence index](docs/TEACHER_EVIDENCE.md)
 - [Cost and resource awareness](docs/COST_AND_RESOURCES.md)
+- [Final submission audit](docs/FINAL_AUDIT.md)
+- [Inter-group bonus plan](docs/BONUS_PLAN.md)

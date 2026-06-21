@@ -14,6 +14,6 @@ def load_report_students() -> tuple[Student, ...]:
         Student(
             role="A",
             full_name=os.getenv(STUDENT_NAME_ENV, "Student A"),
-            id=os.getenv(STUDENT_ID_ENV, "not-configured"),
+            id=os.getenv(STUDENT_ID_ENV, "000000000"),
         ),
     )

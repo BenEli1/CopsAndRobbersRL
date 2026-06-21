@@ -1,5 +1,7 @@
 # PRD - Gmail Reporting
 
+> **Implementation status (2026-06-21):** exact six-game schema validation, atomic JSON/text previews, console target/subject output, environment-only identity/credentials, and a double-gated optional Gmail SMTP adapter are implemented. No live email has been sent or claimed.
+
 ## 1. Purpose
 
 After all six valid sub-games, generate one canonical JSON report and either write an exact dry-run preview or explicitly send one email to a privately configured course recipient. Reporting consumes authoritative `MatchResult` objects and never recalculates outcomes.
@@ -11,8 +13,8 @@ After all six valid sub-games, generate one canonical JSON report and either wri
 3. Student/group/repository metadata is configured and validated.
 4. Totals equal the sum of sub-game scores.
 5. A canonical JSON body is created and schema-validated.
-6. In default dry-run mode, it is atomically written once to `results/report_email_preview.json`.
-7. In explicit live mode, the same canonical body is submitted once through the Gmail adapter/gatekeeper.
+6. In default dry-run mode, it is atomically written to `results/report_email_preview.json` and an email-style text preview is written to `results/report_email_preview.txt`.
+7. In explicit live mode, the same canonical body is submitted once through the Gmail SMTP adapter.
 
 Incomplete matches, technical failures, missing required identities, bad timestamps, or inconsistent totals block finalization.
 
@@ -67,11 +69,11 @@ At runtime, synthetic fixtures and placeholders are forbidden and all scores are
 
 ## 5. Dry-run behavior
 
-`dry_run: true` is the immutable default. The preview directory is created safely and the file is written atomically with UTF-8 and stable indentation/key order. The delivery result identifies `dry_run`, path, payload hash, and timestamp, not provider success. Re-running with identical match/report may overwrite the same preview atomically but must not create multiple emails.
+`dry_run: true` is the immutable repository default. The preview directory is created safely and both files are written atomically with UTF-8 and stable indentation/key order. Re-running overwrites the same previews and does not create multiple emails.
 
 ## 6. Live Gmail behavior
 
-Live delivery requires `dry_run: false`, an explicit configured sender, complete identity metadata, and credentials from environment variables. Gmail API OAuth is preferred; an app-password SMTP adapter may be supported if course/operator policy allows it. Both run through `ApiGatekeeper`.
+Live delivery requires `dry_run: false`, the explicit `--send-email` CLI flag, a configured sender, non-placeholder identity metadata, and credentials from environment variables. The implemented adapter uses Gmail SMTP over SSL with an app password. Missing credentials or identity returns a dry-run status and retains both previews without crashing the match workflow.
 
 Use an idempotency key derived from match ID and canonical payload hash. Retry only transient failures with bounded exponential backoff. Because email provider calls can have ambiguous outcomes, do not automatically resend after an unknown post-submit response without checking the delivery ledger/operator decision.
 
@@ -98,7 +100,7 @@ Use an idempotency key derived from match ID and canonical payload hash. Retry o
 ## 9. Acceptance criteria
 
 - **MAIL-AC-1:** Exactly six valid results produce a payload matching the documented shape; any incomplete/inconsistent match is rejected.
-- **MAIL-AC-2:** Dry-run is default and writes the exact would-be email body to `results/report_email_preview.json` without network access.
+- **MAIL-AC-2:** Dry-run is default and writes the exact body to JSON plus an email-style text preview without network access.
 - **MAIL-AC-3:** Exactly one final report action occurs per match; never one email per sub-game.
 - **MAIL-AC-4:** All timestamps include correct Asia/Jerusalem offset handling, including daylight-saving transitions.
 - **MAIL-AC-5:** Credentials appear only in environment-backed provider setup and never in Git/logs/artifacts.
@@ -107,4 +109,4 @@ Use an idempotency key derived from match ID and canonical payload hash. Retry o
 
 ## 10. Subject and configuration
 
-The subject is configurable with a safe default such as `[MARL Exercise 06] Final Report`. Non-secret config includes the subject, dry-run flag, preview path, and credential environment-variable names. Recipient, sender, and student identity remain private environment configuration.
+The committed non-secret config targets `rmisegal+marl@gmail.com` and uses `[MARL Exercise 06] {group_name} - Final Report`. Sender, app password, and student identity remain private environment configuration.

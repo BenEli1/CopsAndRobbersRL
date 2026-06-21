@@ -24,7 +24,7 @@ def test_match_result_has_email_json_fields(monkeypatch) -> None:
         "totals",
     }
     assert report["timezone"] == "Asia/Jerusalem"
-    assert report["students"] == [{"role": "A", "full_name": "Student A", "id": "not-configured"}]
+    assert report["students"] == [{"role": "A", "full_name": "Student A", "id": "000000000"}]
     assert len(report["sub_games"]) == 6
     assert [game["id"] for game in report["sub_games"]] == list(range(1, 7))
     assert all(game["moves"] == 1 for game in report["sub_games"])

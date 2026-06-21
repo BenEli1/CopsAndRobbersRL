@@ -1,0 +1,9 @@
+schema_version: "1.00"
+target_email: rmisegal+marl@gmail.com
+subject_template: "[MARL Exercise 06] {group_name} - Final Report"
+dry_run: true
+smtp:
+  host: smtp.gmail.com
+  port: 465
+  sender_env: GMAIL_SENDER
+  app_password_env: GMAIL_APP_PASSWORD

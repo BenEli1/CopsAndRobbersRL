@@ -45,6 +45,7 @@ select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
 
 [tool.coverage.run]
 source = ["cops_and_robbers_rl"]
+omit = ["src/cops_and_robbers_rl/gui/*"]
 
 [tool.coverage.report]
 show_missing = true
