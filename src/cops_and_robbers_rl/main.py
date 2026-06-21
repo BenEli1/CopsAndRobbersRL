@@ -28,6 +28,8 @@ def build_parser() -> argparse.ArgumentParser:
     play.add_argument("--thief-agent", choices=("heuristic", "random"), default="heuristic")
     play.add_argument("--seed", type=int, default=42)
     play.add_argument("--output", type=Path, default=DEFAULT_REPORT_PATH)
+    gui = subparsers.add_parser("gui", help="launch the native Tkinter interface")
+    gui.add_argument("--config", default=str(DEFAULT_GAME_CONFIG))
     return parser
 
 
@@ -42,6 +44,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             output_path=args.output,
         )
         print(json.dumps(_summary(result, sdk.last_technical_failures, args.output), indent=2))
+        return 0
+    if args.command == "gui":
+        from cops_and_robbers_rl.gui import launch_gui
+
+        launch_gui(args.config)
         return 0
     raise RuntimeError(f"unsupported command: {args.command}")
 

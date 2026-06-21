@@ -7,6 +7,7 @@ from cops_and_robbers_rl.agents.random_agents import RandomCopAgent, RandomThief
 from cops_and_robbers_rl.environment.game_state import MatchResult, Student
 from cops_and_robbers_rl.environment.rules import GameEngine
 from cops_and_robbers_rl.runner.match_runner import DEFAULT_REPORT_PATH, MatchRunner
+from cops_and_robbers_rl.sdk.interactive import InteractiveSession
 from cops_and_robbers_rl.shared.config import GameConfig, load_game_config
 
 
@@ -49,6 +50,14 @@ class CopsAndRobbersSDK:
         )
         self.last_technical_failures = runner.technical_failures
         return result
+
+    def create_interactive_session(
+        self,
+        cop_agent: BaseAgent | None = None,
+        thief_agent: BaseAgent | None = None,
+    ) -> InteractiveSession:
+        """Create an SDK-owned session for native renderers and controls."""
+        return InteractiveSession(self.config, cop_agent, thief_agent)
 
     def run_match_and_save(
         self,

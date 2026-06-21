@@ -2,7 +2,7 @@
 
 A documentation-first multi-agent reinforcement learning (MARL) project for Bar-Ilan University Vibe Coding Workshop Exercise 06. The planned product is a configurable grid-world match between an autonomous cop and thief, with partial observations, baseline policies, CTDE-inspired learning, a GUI, two MCP endpoints, and one final JSON email report.
 
-> **Status:** the `uv` scaffold, deterministic environment, random/heuristic baseline agents, resilient six-game runner, SDK, headless CLI, and JSON report preview are implemented. MARL training, GUI, MCP, and live Gmail delivery are not implemented.
+> **Status:** the `uv` scaffold, deterministic environment, random/heuristic baseline agents, resilient six-game runner, SDK, headless CLI, Tkinter GUI, and JSON report preview are implemented. MARL training, MCP, and live Gmail delivery are not implemented.
 
 ## Source of truth
 
@@ -70,7 +70,16 @@ uv run cops-and-robbers play `
   --output results/report_email_preview.json
 ```
 
-Training/evaluation, GUI, MCP service, and Gmail commands remain future interfaces and are intentionally absent. The implemented CLI calls the SDK; future consumers must do the same.
+Launch the native GUI with heuristic agents:
+
+```powershell
+uv run python -m cops_and_robbers_rl.main gui
+
+# Equivalent installed command with an explicit configuration
+uv run cops-and-robbers gui --config config/default_game.yaml
+```
+
+Training/evaluation, MCP service, and Gmail commands remain future interfaces and are intentionally absent. The implemented CLI and GUI call the SDK; future consumers must do the same.
 
 ## Test and quality gates
 
@@ -98,7 +107,11 @@ The SDK will validate ranges and reject unknown or unsafe values before a match 
 
 ## GUI
 
-The planned GUI starts with the `gui` command. It must show a scalable grid, visually distinct cop/thief/barriers, current sub-game (`1..6`), move (`0..25`), cumulative scores, terminal result, and pause/run controls. Screenshots are written to `results/screenshots/`; the renderer is read-only and receives SDK snapshots.
+The implemented Tkinter GUI is a read-only renderer over SDK snapshots. It shows the configured grid, labeled cop (`C`), thief (`T`), barriers (`B`), current sub-game, move count, sub-game and cumulative scores, and terminal winner. Controls reset or advance one move, finish the current sub-game, run all six sub-games, and export the canvas as a color PostScript image under `results/screenshots/` by default.
+
+The run buttons intentionally complete immediately rather than animate. Learned policies can later be supplied through the same `BaseAgent` interface without changing the renderer. Automated tests cover the display-independent interactive session; opening a native window requires a desktop with Tk 8.6.
+
+[GUI screenshot placeholder](assets/gui/README.md) — replace with a real target-machine capture before submission.
 
 ## Reports and Gmail safety
 
@@ -121,7 +134,8 @@ Live delivery requires explicit configuration and credentials supplied through e
 | MCP connection fails | Confirm both services use distinct configured ports, valid token, and localhost URLs. |
 | Match has fewer than six results | Technical failures do not count; rerun the failed sub-game before reporting. |
 | Gmail is not configured | Keep `dry_run: true`; inspect the preview JSON instead of sending. |
-| GUI freezes during training | Training must run outside the UI event loop; use headless mode for experiments. |
+| GUI cannot open / `$DISPLAY` error | Run the command on a desktop session with Tkinter available; CI tests only GUI-independent logic. |
+| GUI appears briefly busy | `Run sub-game` and `Run full match` execute synchronously; use `Step` for visual inspection. Training must remain headless. |
 
 ## Contributing
 
