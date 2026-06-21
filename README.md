@@ -183,7 +183,7 @@ Follow docs-first development and TDD: update an approved PRD/PLAN/TODO item, wr
 ## Project identity and license
 
 - Repository: <https://github.com/BenEli1/CopsAndRobbersRL>
-- Student A: Ben Eli (`319086435`)
+- Student A: Ben Eli
 - Course materials: copyright Dr. Yoram Segal; included as assignment sources, not relicensed.
 - Project code license: **not yet selected**. Add a `LICENSE` before public release or reuse.
 
