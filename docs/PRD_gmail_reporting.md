@@ -2,7 +2,7 @@
 
 ## 1. Purpose
 
-After all six valid sub-games, generate one canonical JSON report and either write an exact dry-run preview or explicitly send one email to `course-recipient@example.invalid`. Reporting consumes authoritative `MatchResult` objects and never recalculates outcomes.
+After all six valid sub-games, generate one canonical JSON report and either write an exact dry-run preview or explicitly send one email to a privately configured course recipient. Reporting consumes authoritative `MatchResult` objects and never recalculates outcomes.
 
 ## 2. Preconditions and lifecycle
 
@@ -107,4 +107,4 @@ Use an idempotency key derived from match ID and canonical payload hash. Retry o
 
 ## 10. Subject and configuration
 
-The subject is configurable with a safe default such as `[MARL Exercise 06] BenEli1 - Final Report`. Non-secret config includes recipient, subject, dry-run flag, preview path, sender email placeholder, and credential environment-variable names. Recipient changes require explicit operator configuration; the assignment default remains fixed.
+The subject is configurable with a safe default such as `[MARL Exercise 06] Final Report`. Non-secret config includes the subject, dry-run flag, preview path, and credential environment-variable names. Recipient, sender, and student identity remain private environment configuration.

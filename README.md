@@ -60,7 +60,7 @@ Install the optional official MCP SDK only when running the two network services
 uv sync --extra dev --extra mcp --system-certs
 ```
 
-`pyproject.toml`, `uv.lock`, and the default configs are present. Secrets belong only in `.env` or process environment variables; `.env` is ignored by Git.
+`pyproject.toml`, `uv.lock`, and the default configs are present. Secrets and report identity belong only in `.env` or process environment variables; `.env` is ignored by Git. Never commit a real student ID, recipient address, token, or credential.
 
 ## Run
 
@@ -188,7 +188,7 @@ Follow docs-first development and TDD: update an approved PRD/PLAN/TODO item, wr
 ## Project identity and license
 
 - Repository: <https://github.com/BenEli1/CopsAndRobbersRL>
-- Student A: Ben Eli
+- Student identity: private runtime configuration; intentionally omitted from Git
 - Course materials: copyright Dr. Yoram Segal; included as assignment sources, not relicensed.
 - Project code license: **not yet selected**. Add a `LICENSE` before public release or reuse.
 

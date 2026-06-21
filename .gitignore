@@ -1,6 +1,5 @@
-/ex06.pdf
-/L10-MARL.pdf
-/software_submission_guidelines-V3.pdf
+*.pdf
+*.docx
 .venv/
 __pycache__/
 *.py[cod]
@@ -13,5 +12,11 @@ htmlcov/
 /results/*
 !/results/plots/
 !/results/plots/*.svg
-benelirl-ex06.docx
-benelirl-ex06.pdf
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+credentials*.json
+client_secret*.json

@@ -30,7 +30,7 @@ Although the lecture introduces cooperative Dec-POMDP methods, this cop-versus-t
 
 ### FR-1 Configuration
 
-The system shall load versioned YAML through the SDK and validate `grid_size`, `max_moves`, `num_games`, `max_barriers`, four scoring values, `observation_radius`, `random_seed`, training hyperparameters, and MCP/Gmail settings. Binding defaults are `5 x 5`, 25, 6, 5, and scores `20/10/5/5`.
+The system shall load versioned YAML through the SDK and validate `grid_size`, `max_moves`, `num_games`, `max_barriers`, four scoring values, `observation_radius`, `random_seed`, training hyperparameters, and MCP/Gmail settings. Binding defaults are `5 x 5`, 25, 6, 5, and scores `20/10/5/5`. Private student identity is supplied only through ignored environment variables.
 
 ### FR-2 Environment and match lifecycle
 
@@ -58,7 +58,7 @@ The system shall expose independent cop and thief services, first on localhost a
 
 ### FR-8 Final report
 
-After exactly six valid sub-games, the system shall generate one schema-valid JSON email body for `course-recipient@example.invalid`. Dry-run shall write `results/report_email_preview.json`; live sending is disabled by default and must never expose credentials.
+After exactly six valid sub-games, the system shall generate one schema-valid JSON email body for an explicitly configured course recipient. Dry-run shall write `results/report_email_preview.json`; live sending is disabled by default and must never expose credentials or identity data.
 
 ## 5. Non-functional requirements
 
@@ -92,7 +92,7 @@ After exactly six valid sub-games, the system shall generate one schema-valid JS
 ## 7. Assumptions, dependencies, and constraints
 
 - The exercise PDF overrides the lecture and software guidelines on conflict.
-- Student A is Ben Eli (`000000000`). The required group code and any Student B/C identities remain configuration inputs and must be confirmed before live reporting.
+- Student names, IDs, group metadata, and any Student B/C identities are private runtime configuration and must be confirmed outside source control before live reporting.
 - Local model training is required; cloud hosting is a later deployment step.
 - Internet, Gmail, and cloud credentials may be unavailable during grading, so deterministic local and dry-run paths are mandatory.
 - VDN/QMIX were designed for cooperative team reward. Applying value factorization to a competitive two-agent POSG requires a clearly stated training formulation; no cooperative-optimality claim is implied.

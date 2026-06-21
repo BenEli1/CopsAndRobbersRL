@@ -147,3 +147,10 @@ Add random and heuristic cop/thief agents, enforce local-observation-only execut
 - **Decision:** Commit rendered captures of real headless-match and MCP smoke output, while keeping generated private JSON reports ignored.
 - **Decision:** Add GitHub Actions gates for locked setup, coverage, tests, Ruff lint/format, and Gitleaks history scanning.
 - **Decision:** Add a teacher evidence index and an explicit cost/resource scaling model; retain honest labels for multi-seed research, CTDE, cloud, and Gmail work that is not complete.
+
+## 2026-06-21 - Privacy and repository hygiene
+
+- **Request:** Do not publish the student's ID, unnecessary PDFs, credentials, or other security-sensitive artifacts.
+- **Decision:** Remove hardcoded identity and course-recipient data from code and documentation; load private report identity only from ignored environment variables.
+- **Decision:** Use synthetic placeholders in public report examples and expand ignore rules for documents, keys, certificates, and credential exports.
+- **Decision:** Audit tracked files, binary evidence, and reachable Git history rather than treating deletion from the latest commit as sufficient.

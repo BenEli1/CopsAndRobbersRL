@@ -38,7 +38,7 @@ class CopsAndRobbersSDK:
         thief_agent: BaseAgent | None = None,
         *,
         group_name: str = "BenEli1",
-        students: tuple[Student, ...] = (Student("A", "Ben Eli", "000000000"),),
+        students: tuple[Student, ...] | None = None,
         github_repo: str = "https://github.com/BenEli1/CopsAndRobbersRL",
     ) -> MatchResult:
         """Run six valid sub-games with decentralized execution agents."""

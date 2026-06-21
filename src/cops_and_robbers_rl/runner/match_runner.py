@@ -15,6 +15,7 @@ from cops_and_robbers_rl.environment.game_state import (
 from cops_and_robbers_rl.environment.rules import GameEngine
 from cops_and_robbers_rl.environment.scoring import Score, score_for_winner
 from cops_and_robbers_rl.shared.config import GameConfig
+from cops_and_robbers_rl.shared.identity import load_report_students
 from cops_and_robbers_rl.shared.paths import RESULTS_ROOT
 
 _JERUSALEM = ZoneInfo("Asia/Jerusalem")
@@ -52,7 +53,7 @@ class MatchRunner:
         self,
         *,
         group_name: str = "BenEli1",
-        students: tuple[Student, ...] = (Student("A", "Ben Eli", "000000000"),),
+        students: tuple[Student, ...] | None = None,
         github_repo: str = "https://github.com/BenEli1/CopsAndRobbersRL",
     ) -> MatchResult:
         """Run the configured number of valid sub-games and aggregate scores."""
@@ -66,7 +67,7 @@ class MatchRunner:
         )
         return MatchResult(
             group_name=group_name,
-            students=students,
+            students=students if students is not None else load_report_students(),
             github_repo=github_repo,
             timezone="Asia/Jerusalem",
             sub_games=games,
