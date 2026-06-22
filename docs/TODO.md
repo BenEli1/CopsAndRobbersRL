@@ -73,7 +73,7 @@ Status legend: `[ ]` not started, `[~]` in progress, `[x]` complete, `[!]` block
 
 - [ ] **P9.1** Complete experiments and plots. **DoD:** baselines, IQL, and completed CTDE methods use documented seeds/configs and honest statistical summaries.
 - [x] **P9.2** Update `SUMMARY_REPORT.md`. **DoD:** generated evidence is linked and every unsupported feature is explicitly marked not implemented.
-- [~] **P9.3** Final security and quality audit. **DoD:** local tests, 89.25% coverage, lint, format, headless match, MCP smoke, previews, links, and privacy scans pass; sanitized remote replacement and its CI run await approval.
+- [~] **P9.3** Final security and quality audit. **DoD:** 49 local tests, 89.26% coverage, lint, format, headless match, MCP smoke, previews, links, and privacy scans pass; remote CI confirmation remains before tagging.
 - [x] **P9.4** Documentation audit. **DoD:** `FINAL_AUDIT.md` checks README, code, evidence, and non-claims; PROMPT_LOG is current.
 - [ ] **P9.5** Tag submission version. **DoD:** meaningful Git history, chosen license, credits, release notes, and immutable version tag.
 

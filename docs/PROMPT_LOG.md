@@ -173,3 +173,12 @@ Add random and heuristic cop/thief agents, enforce local-observation-only execut
 - **Request:** Improve the basic native GUI.
 - **Decision:** Retain the SDK-only rendering boundary while adding a coherent dark theme, dashboard header, alternating grid, coordinates, agent depth/labels, metric cards, progress, legend, and clear action hierarchy.
 - **Evidence:** Regenerated and visually inspected the real target-machine screenshot after correcting DPI/taskbar clipping.
+
+## 2026-06-23 - Submission-readiness audit
+
+- **Request:** Audit main and the draft MCP/evidence work, remove privacy leaks, finalize README and academic documentation, verify the assignment defaults/report contract, regenerate honest evidence, exercise MCP/Gmail safety, and run every quality gate.
+- **Decision:** Use the completed local MCP/evidence lineage as the submission base because it contains the tested work absent from `main`; keep VDN/QMIX, cloud MCP, live Gmail receipt, a remote six-game MCP match, and robust held-out evaluation explicitly incomplete.
+- **Decision:** Keep the course recipient only in `config/gmail.yaml`; tests and docs reference the loaded configuration rather than duplicating the address.
+- **Decision:** Keep generated JSON/text previews ignored because local identity can populate them. Commit only anonymized screenshots and plots produced by reproducible commands.
+- **Evidence correction:** Visual inspection found that the genuine GUI image was captured during autoplay while its caption claimed completion. The capture script now waits for the bounded six-game animation before taking the screenshot.
+- **Verification in progress:** Fresh exact command results are recorded in `FINAL_AUDIT.md` and `TEACHER_EVIDENCE.md` only after execution.

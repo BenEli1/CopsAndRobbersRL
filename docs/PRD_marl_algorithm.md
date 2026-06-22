@@ -90,7 +90,7 @@ OLoRA is documented as an advanced option only. It is neither necessary for smal
 
 A joint replay record may contain `(state, local_histories, joint_action, rewards, next_state, next_local_histories, terminated, action_masks, episode_id, timestep)`. Global fields are read only by training components. Dataset sources may include seeded self-play and heuristic rollouts; train/evaluation seeds must be disjoint.
 
-All hyperparameters live in `config/training.yaml`, including algorithm, episodes, batch size, replay capacity, learning rate, gamma, target update, epsilon schedule, hidden size, sequence length, evaluation interval, seeds, and checkpoint policy. Training is local. Checkpoints include schema/config/code version metadata and load in inference/eval mode.
+The implemented tabular-IQL defaults live in the typed `TrainingConfig`, while episode count, staged curriculum, output directory, and game settings are exposed through the CLI/YAML entry point. Moving every training hyperparameter into a validated `config/training.yaml` remains future work and must precede claims of a fully configurable research sweep. Training is local; saved tabular checkpoints and metrics are reproducible pipeline artifacts, not production model releases.
 
 Reward shaping may aid learning but must preserve and separately report authoritative match scores. Shaped terms, scale, and potential policy must be explicit; no post-hoc changes during evaluation.
 

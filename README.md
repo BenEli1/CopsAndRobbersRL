@@ -1,8 +1,19 @@
 # Cops and Robbers RL
 
-A documentation-first multi-agent reinforcement learning (MARL) project for Bar-Ilan University Vibe Coding Workshop Exercise 06. The planned product is a configurable grid-world match between an autonomous cop and thief, with partial observations, baseline policies, CTDE-inspired learning, a GUI, two MCP endpoints, and one final JSON email report.
+A documentation-first multi-agent reinforcement learning (MARL) project for Bar-Ilan University Vibe Coding Workshop Exercise 06. It implements a configurable grid-world match between an autonomous cop and thief, with partial observations, baseline policies, tabular IQL, a GUI, two local MCP endpoints, and one final JSON report preview.
 
 > **Status:** the deterministic environment, baseline agents, SDK/CLI, polished Tkinter dashboard, tabular IQL training, sample plots, local cop/thief MCP services, and validated JSON/text Gmail dry-run are implemented. VDN/QMIX, cloud MCP deployment, and verified live Gmail delivery are not implemented.
+
+## Implementation status
+
+| Area | Status | Honest boundary |
+|---|---|---|
+| Game, six-sub-game runner, SDK/CLI | Implemented | Technical failures are retried and exhausted retries fail safely. |
+| Random/heuristic agents and tabular IQL | Implemented | The committed training run is a pipeline smoke, not proof of convergence. |
+| Tkinter GUI and reproducible captures | Implemented | Native-window rendering requires a desktop session. |
+| Local cop/thief MCP services | Implemented | In-process contracts and localhost services exist; cloud deployment does not. |
+| Gmail reporting | Partial | Validated JSON/text dry-run is implemented; live delivery is unverified and disabled by default. |
+| VDN/QMIX and robust multi-seed evaluation | Future | Documented as extensions; no implementation or performance claim. |
 
 ## Source of truth
 
@@ -16,7 +27,7 @@ These course-provided source documents are intentionally ignored and not publish
 
 See [`docs/PRD.md`](docs/PRD.md), [`docs/PLAN.md`](docs/PLAN.md), and [`docs/TODO.md`](docs/TODO.md) before implementation.
 
-## Planned capabilities
+## Implemented game contract
 
 - One match contains exactly six valid sub-games on a default `5 x 5` grid.
 - A sub-game ends on capture or after 25 completed moves.
@@ -36,7 +47,7 @@ src/cops_and_robbers_rl/
   sdk/                  Sole public entry point for business workflows
   environment/          Deterministic rules and observations
   agents/               Random, heuristic, and learned policies
-  marl/                 IQL, replay, VDN, metrics, training
+  marl/                 Tabular IQL, replay, metrics, and training
   gui/                   Rendering only; calls the SDK
   mcp/                   Two agent service adapters
   reporting/             Match schema and Gmail/dry-run adapters
@@ -62,7 +73,7 @@ Install the optional official MCP SDK only when running the two network services
 uv sync --extra dev --extra mcp --system-certs
 ```
 
-`pyproject.toml`, `uv.lock`, and the default configs are present. Secrets and report identity belong only in `.env` or process environment variables; `.env` is ignored by Git. Never commit a real student ID, recipient address, token, or credential.
+`pyproject.toml`, `uv.lock`, and the default configs are present. Secrets and report identity belong only in `.env` or process environment variables; `.env` is ignored by Git. Never commit a real student ID, token, or credential. The non-secret course recipient is defined once in `config/gmail.yaml`.
 
 ## Run
 
@@ -139,22 +150,21 @@ GitHub Actions enforces the locked install, coverage threshold, test suite, Ruff
 
 ## Configuration
 
-Runtime values must never be hardcoded. Planned files are:
+Runtime settings are versioned in YAML and validated before use:
 
 | File | Purpose |
 |---|---|
 | `config/default_game.yaml` | Grid size, six sub-games, 25 moves, barriers, scoring, observation radius, seed |
-| `config/training.yaml` | Algorithm, episodes, discount, optimizer, replay, exploration, evaluation seeds |
 | `config/mcp.yaml` | Cop/thief hosts and distinct ports, timeout, retry, token environment-variable name |
 | `config/gmail.yaml` | Course recipient, group-aware subject, dry-run default, SMTP environment-variable names |
 
-The SDK will validate ranges and reject unknown or unsafe values before a match starts. Full contracts appear in the mechanism PRDs.
+The SDK validates ranges and rejects unknown or unsafe game values before a match starts. Training episode count and staged mode are currently CLI options; a dedicated training YAML is future work.
 
 ## GUI
 
 The Tkinter GUI is a read-only dashboard over SDK snapshots. It uses a themed tactical board, coordinate labels, role-colored score tiles, move progress, a six-game series tracker, compact legend, and a clear primary action while preserving labeled cop (`C`), thief (`T`), and barriers (`B`). **Animate match** plays all six games move-by-move without blocking Tkinter; Space pauses or resumes. Other controls reset, advance one move, finish the current sub-game, and export the canvas as color PostScript under `results/screenshots/`.
 
-The run buttons intentionally complete immediately rather than animate. Learned policies can later be supplied through the same `BaseAgent` interface without changing the renderer. Automated tests cover the display-independent interactive session; opening a native window requires a desktop with Tk 8.6.
+**Animate match** is the non-blocking playback path; the single-sub-game and immediate-completion controls remain available for fast inspection. Learned policies can later be supplied through the same `BaseAgent` interface without changing the renderer. Automated tests cover the display-independent interactive session; opening a native window requires a desktop with Tk 8.6.
 
 [Real GUI and command demo evidence](docs/TEACHER_EVIDENCE.md) is captured from the target machine and can be reproduced with the scripts under `scripts/`.
 
@@ -167,7 +177,7 @@ results/report_email_preview.json
 results/report_email_preview.txt
 ```
 
-Default `config/gmail.yaml` targets `rmisegal+marl@gmail.com`, uses `[MARL Exercise 06] {group_name} - Final Report`, and keeps `dry_run: true`. The JSON file is the exact report body; the text file shows `To`, `Subject`, and the same body.
+Default `config/gmail.yaml` contains the single course-recipient definition, uses a group-aware subject, and keeps `dry_run: true`. The JSON file is the exact report body; the text file shows `To`, `Subject`, and the same body.
 
 Real Gmail SMTP delivery requires all three gates: set `dry_run: false` in a private/local config, pass `--send-email`, and provide `GMAIL_SENDER` plus `GMAIL_APP_PASSWORD` in the environment. Missing credentials or placeholder student identity safely falls back to previews without crashing the match.
 
@@ -195,6 +205,26 @@ Tokens, OAuth client secrets, app passwords, `.env`, student IDs, and generated 
 | Gmail is not configured | Keep `dry_run: true`; inspect the preview JSON instead of sending. |
 | GUI cannot open / `$DISPLAY` error | Run the command on a desktop session with Tkinter available; CI tests only GUI-independent logic. |
 | GUI appears briefly busy | `Run sub-game` and `Run full match` execute synchronously; use `Step` for visual inspection. Training must remain headless. |
+
+## Evidence
+
+- [Teacher evidence index](docs/TEACHER_EVIDENCE.md) with exact reproduction commands and expected outputs
+- [Native GUI screenshot](assets/evidence/gui-full-match.png)
+- [Headless six-game screenshot](assets/evidence/headless-match.png)
+- [Local MCP smoke screenshot](assets/evidence/mcp-smoke.png)
+- [IQL learning, loss, and baseline plots](results/plots/)
+- Generated dry-run files: `results/report_email_preview.json` and `results/report_email_preview.txt` (ignored because local identity may be configured)
+
+## Final submission checklist
+
+- [x] Root README and mandatory PRD/PLAN/TODO documents are present.
+- [x] Default YAML encodes the 5x5, 25-move, six-game, five-barrier, 20/10/5/5 contract.
+- [x] CLI, GUI, IQL training, local MCP smoke, and dry-run reporting commands are documented.
+- [x] Ruff, tests, coverage >=85%, and CI/secret scanning are configured.
+- [x] Public files contain placeholders only for private identity and credentials.
+- [ ] Add private student identity only to the Moodle PDF/local environment.
+- [ ] Optionally run held-out multi-seed evaluation; do not overstate the existing smoke result.
+- [ ] VDN/QMIX, cloud MCP, live Gmail receipt, and the bonus match remain future work.
 
 ## Contributing
 

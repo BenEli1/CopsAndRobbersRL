@@ -109,4 +109,4 @@ Use an idempotency key derived from match ID and canonical payload hash. Retry o
 
 ## 10. Subject and configuration
 
-The committed non-secret config targets `rmisegal+marl@gmail.com` and uses `[MARL Exercise 06] {group_name} - Final Report`. Sender, app password, and student identity remain private environment configuration.
+The committed non-secret config contains the course recipient in one place and uses a group-aware final-report subject. Sender, app password, and student identity remain private environment configuration.

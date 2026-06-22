@@ -1,6 +1,7 @@
 param(
     [string]$Output = "assets/evidence/gui-full-match.png",
-    [int]$TimeoutSeconds = 20
+    [int]$TimeoutSeconds = 20,
+    [int]$CaptureDelaySeconds = 24
 )
 
 $ErrorActionPreference = "Stop"
@@ -100,7 +101,8 @@ try {
     }
 
     [NativeWindowCapture]::SetForegroundWindow($window) | Out-Null
-    Start-Sleep -Milliseconds 500
+    # A full six-game demo can take at most 150 animation ticks at 140 ms each.
+    Start-Sleep -Seconds $CaptureDelaySeconds
     $rect = New-Object NativeWindowCapture+Rect
     if (-not [NativeWindowCapture]::GetWindowRect($window, [ref]$rect)) {
         throw "Could not read the GUI window bounds."

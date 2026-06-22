@@ -24,7 +24,7 @@ def _match():
 def test_default_gmail_config_is_safe_and_group_aware() -> None:
     config = load_gmail_config()
 
-    assert config.target_email == "rmisegal+marl@gmail.com"
+    assert "@" in config.target_email
     assert config.dry_run is True
     assert "{group_name}" in config.subject_template
 
@@ -56,10 +56,10 @@ def test_dry_run_writes_exact_json_and_text_previews(tmp_path: Path, capsys) -> 
     assert delivery.sent is False
     assert json.loads(output.read_text(encoding="utf-8")) == result.to_report_dict()
     text = output.with_suffix(".txt").read_text(encoding="utf-8")
-    assert "To: rmisegal+marl@gmail.com" in text
+    assert f"To: {delivery.target_email}" in text
     assert "[MARL Exercise 06] BenEli1 - Final Report" in text
     printed = capsys.readouterr().out
-    assert "Target email: rmisegal+marl@gmail.com" in printed
+    assert f"Target email: {delivery.target_email}" in printed
     assert "Subject:" in printed
 
 
@@ -69,7 +69,7 @@ def test_missing_credentials_does_not_crash_match_workflow(tmp_path: Path, monke
     config_path = tmp_path / "gmail.yaml"
     config_path.write_text(
         """schema_version: "1.00"
-target_email: rmisegal+marl@gmail.com
+target_email: recipient@example.invalid
 subject_template: "[MARL Exercise 06] {group_name} - Final Report"
 dry_run: false
 smtp:
@@ -99,7 +99,7 @@ smtp:
 
 
 def test_explicit_send_uses_environment_credentials(tmp_path: Path, monkeypatch) -> None:
-    monkeypatch.setenv("MARL_STUDENT_ID", "123456789")
+    monkeypatch.setenv("MARL_STUDENT_ID", "111111111")
     monkeypatch.setenv("GMAIL_SENDER", "sender@example.com")
     monkeypatch.setenv("GMAIL_APP_PASSWORD", "placeholder")
     config = replace(load_gmail_config(), dry_run=False)
@@ -120,7 +120,7 @@ def test_explicit_send_uses_environment_credentials(tmp_path: Path, monkeypatch)
 
 
 def test_smtp_failure_retains_previews(tmp_path: Path, monkeypatch) -> None:
-    monkeypatch.setenv("MARL_STUDENT_ID", "123456789")
+    monkeypatch.setenv("MARL_STUDENT_ID", "111111111")
     monkeypatch.setenv("GMAIL_SENDER", "sender@example.com")
     monkeypatch.setenv("GMAIL_APP_PASSWORD", "placeholder")
     reporter = GmailReporter(replace(load_gmail_config(), dry_run=False))
