@@ -182,3 +182,11 @@ Add random and heuristic cop/thief agents, enforce local-observation-only execut
 - **Decision:** Keep generated JSON/text previews ignored because local identity can populate them. Commit only anonymized screenshots and plots produced by reproducible commands.
 - **Evidence correction:** Visual inspection found that the genuine GUI image was captured during autoplay while its caption claimed completion. The capture script now waits for the bounded six-game animation before taking the screenshot.
 - **Verification in progress:** Fresh exact command results are recorded in `FINAL_AUDIT.md` and `TEACHER_EVIDENCE.md` only after execution.
+
+## 2026-06-23 - Submission polish and held-out diagnostic
+
+- **Request:** Keep private student identity only in Moodle/local runtime context, improve submission quality without changing working game logic, optionally run held-out multi-seed evaluation, and keep VDN/QMIX, cloud MCP, live Gmail receipt, and bonus match as future work.
+- **Decision:** Do not add private identity to tracked files. README and audit language now says identity belongs only in the Moodle PDF or ignored local environment if required.
+- **Decision:** Preserve the implemented code/logic and run a small diagnostic using the existing committed IQL checkpoints instead of retraining or changing algorithms.
+- **Evidence:** Held-out seeds 100-109 were evaluated against fixed heuristic opponents, 10 six-game matches per row. Learned cop averaged 1.00/6 wins against heuristic thief; learned thief averaged 0.60/6 wins against heuristic cop.
+- **Scope boundary:** The diagnostic is recorded as sanity evidence only. It is not convergence evidence, not a superiority claim, and not a substitute for robust research-grade evaluation.

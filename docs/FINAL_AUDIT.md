@@ -4,7 +4,7 @@ Audit date: 2026-06-23 (Asia/Jerusalem)
 
 ## Verdict and recommended score
 
-The submission is locally ready: deterministic six-game mechanics, decentralized observations, baseline agents, tabular IQL, the SDK-backed GUI, reproducible evidence, validated dry-run reporting, and local MCP services all run. The honest recommended self-score is **92/100**. Points are reserved because robust held-out multi-seed research, VDN/QMIX, a remote six-game MCP match, cloud deployment, live Gmail receipt, and the optional bonus match are not complete.
+The submission is locally ready: deterministic six-game mechanics, decentralized observations, baseline agents, tabular IQL, the SDK-backed GUI, reproducible evidence, validated dry-run reporting, and local MCP services all run. A small held-out seed diagnostic was run, but the honest recommended self-score remains **92/100**. Points are reserved because robust research-grade multi-seed evaluation, VDN/QMIX, a remote six-game MCP match, cloud deployment, live Gmail receipt, and the optional bonus match are not complete.
 
 ## Assignment checklist
 
@@ -16,7 +16,7 @@ The submission is locally ready: deterministic six-game mechanics, decentralized
 | Exact report and totals | Implemented | Schema validation checks keys, ISO timestamps, move bounds, winners, six games, and recomputed totals. |
 | SDK-only business workflows | Implemented | CLI, GUI session, runner, training entry, MCP adapters, and reporter use the SDK/domain interfaces. |
 | Partial observation and MARL theory | Implemented | Summary/PRDs explain MARL, local observations, Dec-POMDP versus POSG, CTDE, IQL, VDN/QMIX scope, limitations, and ethics. |
-| IQL | Implemented baseline | Tabular replay-backed training and smoke plots exist; convergence and superiority are not claimed. |
+| IQL | Implemented baseline | Tabular replay-backed training, smoke plots, and a small held-out diagnostic exist; convergence and superiority are not claimed. |
 | VDN/QMIX | Not implemented | Documented extension only. |
 | GUI commands and evidence | Implemented | Standard GUI startup and completed `gui --demo` capture were verified on Windows. |
 | Local MCP | Partial/implemented MVP | Separate services/ports, health/action contracts, local observations, optional auth, timeout/retry/fallback, and smoke tests exist. Full remote match/cloud are future work. |
@@ -37,6 +37,7 @@ Executed from the repository root on 2026-06-23:
 | `uv run pytest` | Passed: 49 tests in 0.49 s. |
 | `uv run pytest --cov=cops_and_robbers_rl --cov-report=term-missing --cov-fail-under=85` | Passed: 49 tests; 89.26% coverage. |
 | `uv run cops-and-robbers play --config config/default_game.yaml --seed 42 --output results/report_email_preview.json` | Passed: 6 games, cop/thief wins 1/5, totals 45/55, zero technical retries, dry-run preview. |
+| Held-out diagnostic, seeds 100-109 against fixed heuristic opponents | Passed: 10 six-game matches per row; learned cop averaged 1.00/6 wins vs heuristic thief, learned thief averaged 0.60/6 wins vs heuristic cop; diagnostic only. |
 | `uv run python -m cops_and_robbers_rl.main mcp-smoke` | Passed: in-process contract fallback, SDK installed, cop/thief ports 8101/8102, legal role actions. |
 | `powershell -File scripts/capture_cli_evidence.ps1` | Passed; regenerated headless-match and MCP screenshots from real output. |
 | `powershell -File scripts/capture_gui.ps1` | Passed; regenerated a completed game-6-of-6 native GUI screenshot after bounded autoplay. |
@@ -46,7 +47,7 @@ Generated JSON/text previews are intentionally Git-ignored because private ident
 
 ## Known limitations
 
-- The IQL plots are a small pipeline smoke, not robust held-out evidence.
+- The IQL plots and 10-seed diagnostic are useful sanity evidence, not robust held-out research evidence.
 - VDN and QMIX are not implemented; the centralized trace is CTDE-inspired scaffolding, not a centralized critic.
 - MCP cloud deployment and a full six-game remote-service match are not implemented.
 - Live Gmail delivery and receipt are not verified; dry-run remains the safe default.
@@ -55,4 +56,4 @@ Generated JSON/text previews are intentionally Git-ignored because private ident
 
 ## Submission recommendation
 
-Submit the tested submission branch and private Moodle PDF identity together. Do not claim incomplete research, cloud, live-email, or bonus items. Recommended self-score: **92/100**.
+Submit the tested submission branch and add private student identity only in the Moodle PDF or local runtime environment if required. Do not claim incomplete research, cloud, live-email, or bonus items. Recommended self-score: **92/100**.

@@ -2,7 +2,7 @@
 
 A documentation-first multi-agent reinforcement learning (MARL) project for Bar-Ilan University Vibe Coding Workshop Exercise 06. It implements a configurable grid-world match between an autonomous cop and thief, with partial observations, baseline policies, tabular IQL, a GUI, two local MCP endpoints, and one final JSON report preview.
 
-> **Status:** the deterministic environment, baseline agents, SDK/CLI, polished Tkinter dashboard, tabular IQL training, sample plots, local cop/thief MCP services, and validated JSON/text Gmail dry-run are implemented. VDN/QMIX, cloud MCP deployment, and verified live Gmail delivery are not implemented.
+> **Status:** the deterministic environment, baseline agents, SDK/CLI, polished Tkinter dashboard, tabular IQL training, sample plots, a small held-out seed diagnostic, local cop/thief MCP services, and validated JSON/text Gmail dry-run are implemented. VDN/QMIX, cloud MCP deployment, verified live Gmail delivery, and the bonus match are not implemented.
 
 ## Visual tour
 
@@ -34,18 +34,18 @@ The committed image is a reproducible final-frame capture from that playback, ge
 |---|---|
 | ![IQL loss curve](results/plots/loss_curve.svg) | ![Baseline comparison](results/plots/baseline_comparison.svg) |
 
-These plots are genuine 40-episode-per-stage pipeline evidence, not a claim of convergence or superiority.
+These plots are genuine 40-episode-per-stage pipeline evidence, not a claim of convergence or superiority. A small held-out diagnostic over seeds 100-109 is recorded in [`docs/SUMMARY_REPORT.md`](docs/SUMMARY_REPORT.md); it is useful sanity evidence, not a robust experiment.
 
 ## Implementation status
 
 | Area | Status | Honest boundary |
 |---|---|---|
 | Game, six-sub-game runner, SDK/CLI | Implemented | Technical failures are retried and exhausted retries fail safely. |
-| Random/heuristic agents and tabular IQL | Implemented | The committed training run is a pipeline smoke, not proof of convergence. |
+| Random/heuristic agents and tabular IQL | Implemented | The committed training run and 10-seed diagnostic are limited evidence, not proof of convergence. |
 | Tkinter GUI and reproducible captures | Implemented | Native-window rendering requires a desktop session. |
 | Local cop/thief MCP services | Implemented | In-process contracts and localhost services exist; cloud deployment does not. |
 | Gmail reporting | Partial | Validated JSON/text dry-run is implemented; live delivery is unverified and disabled by default. |
-| VDN/QMIX and robust multi-seed evaluation | Future | Documented as extensions; no implementation or performance claim. |
+| VDN/QMIX and robust research evaluation | Future | Documented as extensions; no CTDE implementation or performance claim. |
 
 ## Source of truth
 
@@ -133,7 +133,7 @@ uv run cops-and-robbers gui --config config/default_game.yaml
 uv run cops-and-robbers gui --demo
 ```
 
-Robust multi-seed research evaluation and cloud MCP deployment remain future interfaces. The implemented CLI, GUI, and reporter call the SDK; future consumers must do the same.
+Robust research evaluation and cloud MCP deployment remain future interfaces. The implemented CLI, GUI, and reporter call the SDK; future consumers must do the same.
 
 Train independent Q-learners and generate JSON metrics, checkpoints, learning curves, a loss curve, and a fair fixed-opponent baseline comparison:
 
@@ -254,9 +254,9 @@ Tokens, OAuth client secrets, app passwords, `.env`, student IDs, and generated 
 - [x] CLI, GUI, IQL training, local MCP smoke, and dry-run reporting commands are documented.
 - [x] Ruff, tests, coverage >=85%, and CI/secret scanning are configured.
 - [x] Public files contain placeholders only for private identity and credentials.
-- [ ] Add private student identity only to the Moodle PDF/local environment.
-- [ ] Optionally run held-out multi-seed evaluation; do not overstate the existing smoke result.
-- [ ] VDN/QMIX, cloud MCP, live Gmail receipt, and the bonus match remain future work.
+- [x] Keep private student identity out of Git; add it only to the Moodle PDF or local environment when submitting.
+- [x] Run and document a small held-out seed diagnostic without overstating the smoke result.
+- [ ] VDN/QMIX, cloud MCP, live Gmail receipt, robust research evaluation, and the bonus match remain future work.
 
 ## Contributing
 

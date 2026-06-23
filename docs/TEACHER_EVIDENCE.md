@@ -48,7 +48,7 @@ The in-process smoke requires no credentials or external network service. The op
 - [Loss curve](../results/plots/loss_curve.svg)
 - [Baseline comparison](../results/plots/baseline_comparison.svg)
 
-The plots are real 40-episode-per-stage pipeline artifacts. They are not held-out multi-seed evidence and do not establish convergence or superiority.
+The plots are real 40-episode-per-stage pipeline artifacts. A small held-out seed diagnostic is recorded in [SUMMARY_REPORT.md](SUMMARY_REPORT.md), but neither the plots nor that diagnostic establish convergence or superiority.
 
 ## Assessment map
 
@@ -59,7 +59,7 @@ The plots are real 40-episode-per-stage pipeline artifacts. They are not held-ou
 | Testing and quality | 49 tests, 89.26% business-logic coverage, Ruff lint/format, and [GitHub Actions workflow](../.github/workflows/quality.yml) |
 | UI and UX | Real native screenshot of the themed dashboard above; renderer consumes immutable SDK snapshots only |
 | Configuration and security | Versioned game/MCP/Gmail YAML, strict validation, placeholder-only `.env-example`, ignored private data, auth rejection tests, and automated secret scanning |
-| Research and analysis | [Summary report](SUMMARY_REPORT.md), real [learning plots](../results/plots/learning_curve_cop.svg), [loss plot](../results/plots/loss_curve.svg), baseline comparison, limitations, and non-stationarity discussion |
+| Research and analysis | [Summary report](SUMMARY_REPORT.md), real [learning plots](../results/plots/learning_curve_cop.svg), [loss plot](../results/plots/loss_curve.svg), baseline comparison, small held-out diagnostic, limitations, and non-stationarity discussion |
 | Version management and AI workflow | Meaningful milestone commits and chronological [prompt/decision log](PROMPT_LOG.md) |
 | Cost awareness | Explicit [cost and resource model](COST_AND_RESOURCES.md) with scaling drivers and budget controls |
 | Extensibility | SDK boundary, agent interface, local-observation contract, MCP gatekeeper, and [QMIX extension contract](QMIX_EXTENSION.md) |
@@ -67,4 +67,4 @@ The plots are real 40-episode-per-stage pipeline artifacts. They are not held-ou
 
 ## Honest scope boundary
 
-Implemented evidence covers the deterministic game, six-game runner, baseline agents, tabular IQL pipeline, GUI, dry-run report preview, and local MCP contracts/services. Robust held-out multi-seed conclusions, VDN/QMIX, cloud deployment, and live Gmail delivery are not claimed.
+Implemented evidence covers the deterministic game, six-game runner, baseline agents, tabular IQL pipeline, GUI, dry-run report preview, and local MCP contracts/services. Robust held-out multi-seed conclusions, VDN/QMIX, cloud deployment, live Gmail delivery, and bonus-match completion are not claimed.

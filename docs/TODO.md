@@ -35,8 +35,8 @@ Status legend: `[ ]` not started, `[~]` in progress, `[x]` complete, `[!]` block
 
 - [x] **P4.1** Specify observation/action encodings and replay schema. **DoD:** local encoding, movement masking, terminal flags, seeded replay, and centralized trace boundaries are implemented and tested.
 - [x] **P4.2** Implement independent learners. **DoD:** tabular Bellman update has an exact unit test and smoke training populates both Q-tables.
-- [~] **P4.3** Train and evaluate IQL. **DoD:** JSON checkpoints, required plots, staged training, and fixed-opponent comparisons run; robust multi-seed held-out evaluation remains pending.
-- [~] **P4.4** Analyze non-stationarity. **DoD:** limitations and non-convergence warning are recorded; multi-seed instability evidence remains pending.
+- [~] **P4.3** Train and evaluate IQL. **DoD:** JSON checkpoints, required plots, staged training, fixed-opponent comparisons, and a small held-out seed diagnostic run; robust research-grade evaluation remains pending.
+- [~] **P4.4** Analyze non-stationarity. **DoD:** limitations, non-convergence warning, and small held-out diagnostic are recorded; broader instability evidence remains pending.
 
 ## P5 - CTDE/value factorization
 
@@ -71,7 +71,7 @@ Status legend: `[ ]` not started, `[~]` in progress, `[x]` complete, `[!]` block
 
 ## P9 - Submission and final-project evidence
 
-- [ ] **P9.1** Complete experiments and plots. **DoD:** baselines, IQL, and completed CTDE methods use documented seeds/configs and honest statistical summaries.
+- [ ] **P9.1** Complete experiments and plots. **DoD:** baselines, IQL, and completed CTDE methods use documented seeds/configs and honest statistical summaries; current IQL evidence remains smoke plus small diagnostic only.
 - [x] **P9.2** Update `SUMMARY_REPORT.md`. **DoD:** generated evidence is linked and every unsupported feature is explicitly marked not implemented.
 - [~] **P9.3** Final security and quality audit. **DoD:** 49 local tests, 89.26% coverage, lint, format, headless match, MCP smoke, previews, links, and privacy scans pass; remote CI confirmation remains before tagging.
 - [x] **P9.4** Documentation audit. **DoD:** `FINAL_AUDIT.md` checks README, code, evidence, and non-claims; PROMPT_LOG is current.
